@@ -8,7 +8,7 @@ Download the JavaFX SDK [here](https://gluonhq.com/products/javafx/). Move the `
 
 ## Dependencies
 
-You will then have to specify where your library files are. In ``settings.json``, add the file path to your `javafx-sdk-19.0.2.1/lib` folder from root.
+You will then have to specify where your library files are. In ``settings.json``, add the file path to your `javafx-sdk-19.0.2.1/lib/` folder from root, including `*.jar` at the end.
 
 ```json
 {
