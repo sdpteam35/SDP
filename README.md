@@ -1,12 +1,25 @@
-# Steps to take if the application does not run after first pull
+# Steps to take before running the application for the first time
 
 ## Download the JavaFX SDK
 
-Download the JavaFX SDK [here](https://gluonhq.com/products/javafx/). Move the `javafx-sdk-19.0.2.1` folder as needed so that it is in the same directory as the `SDP` folder (not inside of it). Let the group know so that the JVM args can be changed in `launch.json`.
+Download the JavaFX SDK [here](https://gluonhq.com/products/javafx/). Move the `javafx-sdk-19.0.2.1` folder as needed so that it is in the same directory as the `SDP` folder (not inside of it).
+
+![Directory example](directory.png)
 
 ## Dependencies
 
-You may have to add dependencies manually. In the `Java Projects` Explorer, go to `Referenced Libraries` and click `+`. Add all of the `.jar` files that are in the `javafx-sdk-19.0.2.1/lib` folder.
+You will then have to specify where your library files are. In ``settings.json``, add the file path to your `javafx-sdk-19.0.2.1/lib` folder from root.
+
+```json
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "/Users/ryanbrown/javafx-sdk-19.0.2.1/lib/*.jar",
+        // add JavaFX file path here
+    ],
+}
+```
 
 # Getting Started
 
