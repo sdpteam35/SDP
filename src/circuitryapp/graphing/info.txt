@@ -1,0 +1,2 @@
+This folder is to hold all the things we may need to show a graph showing voltage / current over time.
+We may need another dependency for this (ex. Python has matplotlib); we need to check what JavaFX's capacities are in that regard.

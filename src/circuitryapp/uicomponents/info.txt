@@ -1,0 +1,1 @@
+This folder will hold visual components for our project, like .png's of what a resistor or power source may look like

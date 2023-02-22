@@ -1,8 +1,9 @@
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "/Users/ryanbrown/javafx-sdk-19.0.2.1/lib/*.jar",
-        // add JavaFX file path here
-    ],
+    "java.project.referencedLibraries": {
+        "include": [
+            //javafx directory
+        ],
+    },
 }

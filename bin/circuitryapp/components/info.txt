@@ -1,0 +1,6 @@
+Some class ideas:
+Battery(.java)
+Resistor(.java)
+
+Capacitor
+Inductor
