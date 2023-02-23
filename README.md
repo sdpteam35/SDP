@@ -56,7 +56,7 @@ settings.json:
         ],
     },
 }
-```json
+```
 
 launch.json:
 ```json
