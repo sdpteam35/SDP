@@ -7,13 +7,18 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.awt.*;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         BorderPane root = new BorderPane();
-        Scene scene = new Scene(root, 1600, 2560);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int height = (int)screenSize.getHeight();
+        int width = (int)screenSize.getWidth();
+        Scene scene = new Scene(root, height, width);
         
         MenuBar menubar = new MenuBar();
 
