@@ -20,7 +20,7 @@ You will now have to create a folder named `.vscode` in your directory (add this
 }
 ```
 
-In `//javafx directory`, put the path from root to your `javafx-sdk-19.0.2.1` folder.
+In `//javafx directory`, put the path from root to your `javafx-sdk-19.0.2.1/lib` folder. Be sure to add `*.jar` at the end of it.
 
 Put this in `launch.json`:
 
@@ -41,7 +41,7 @@ Try to click "Run" from `Main.java`. It will automatically put a configuration i
 "vmArgs": "--module-path <javafx directory> --add-modules javafx.controls,javafx.fxml",
 ```
 
-where `<javafx directory` is the path to your `javafx-sdk-19.0.2.1` folder from **the SDP directory**.
+where `<javafx directory` is the path to your `javafx-sdk-19.0.2.1/lib` folder from **the SDP directory**.
 
 ## Examples of the JSON files
 
@@ -52,7 +52,7 @@ settings.json:
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": {
         "include": [
-            "/Users/ryanbrown/Downloads/javafx-sdk-19.0.2.1/lib/*.jar"
+            "/Users/ryanbrown/javafx-sdk-19.0.2.1/lib/*.jar"
         ],
     },
 }
@@ -71,7 +71,7 @@ launch.json:
             "name": "Launch Main",
             "request": "launch",
             "mainClass": "circuitryapp.Main",
-            "vmArgs": "--module-path ../Downloads/javafx-sdk-19.0.2.1/lib --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path ../javafx-sdk-19.0.2.1/lib --add-modules javafx.controls,javafx.fxml",
             "projectName": "SDP_3a1b811c"
       }
       ]
