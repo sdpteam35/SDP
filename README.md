@@ -41,7 +41,7 @@ Try to click "Run" from `Main.java`. It will automatically put a configuration i
 "vmArgs": "--module-path <javafx directory> --add-modules javafx.controls,javafx.fxml",
 ```
 
-where `<javafx directory` is the path to your `javafx-sdk-19.0.2.1/lib` folder from **the SDP directory**.
+where `<javafx directory>` is the path to your `javafx-sdk-19.0.2.1/lib` folder from **the SDP directory**.
 
 ## Examples of the JSON files
 
