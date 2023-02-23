@@ -3,7 +3,7 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": {
         "include": [
-            "/Users/ryanbrown/javafx-sdk-19.0.2.1/lib/*.jar"
+            //javafx directory
         ],
     },
 }
