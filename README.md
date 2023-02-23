@@ -2,22 +2,79 @@
 
 ## Download the JavaFX SDK
 
-Download the JavaFX SDK [here](https://gluonhq.com/products/javafx/). Move the `javafx-sdk-19.0.2.1` folder as needed so that it is in the same directory as the `SDP` folder (not inside of it).
+Download the JavaFX SDK [here](https://gluonhq.com/products/javafx/). It does not matter where you place it in your file system.
 
-![Directory example](directory.png)
+## Setting up the .vscode folder
 
-## Dependencies
-
-You will then have to specify where your library files are. In ``settings.json``, add the file path to your `javafx-sdk-19.0.2.1/lib/` folder from root, including `*.jar` at the end.
+You will now have to create a folder named `.vscode` in your directory (add this through VS Code). Then, create two files: `settings.json` and `launch.json`. Put this in `settings.json`:
 
 ```json
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "/Users/ryanbrown/javafx-sdk-19.0.2.1/lib/*.jar",
-        // add JavaFX file path here
-    ],
+    "java.project.referencedLibraries": {
+        "include": [
+            //javafx directory
+        ],
+    },
+}
+```
+
+In `//javafx directory`, put the path from root to your `javafx-sdk-19.0.2.1` folder.
+
+Put this in `launch.json`:
+
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    ]
+}
+```
+
+Try to click "Run" from `Main.java`. It will automatically put a configuration in `launch.json`. Then, so that the runtime can work correctly, add into the configuration:
+
+```json
+"vmArgs": "--module-path <javafx directory> --add-modules javafx.controls,javafx.fxml",
+```
+
+where `<javafx directory` is the path to your `javafx-sdk-19.0.2.1` folder from **the SDP directory**.
+
+## Examples of the JSON files
+
+settings.json:
+```json
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": {
+        "include": [
+            "/Users/ryanbrown/Downloads/javafx-sdk-19.0.2.1/lib/*.jar"
+        ],
+    },
+}
+```json
+
+launch.json:
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+            "type": "java",
+            "name": "Launch Main",
+            "request": "launch",
+            "mainClass": "circuitryapp.Main",
+            "vmArgs": "--module-path ../Downloads/javafx-sdk-19.0.2.1/lib --add-modules javafx.controls,javafx.fxml",
+            "projectName": "SDP_3a1b811c"
+      }
+      ]
 }
 ```
 
