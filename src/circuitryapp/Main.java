@@ -1,13 +1,18 @@
 package circuitryapp;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import java.awt.*;
 
 public class Main extends Application {
 
@@ -15,10 +20,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         BorderPane root = new BorderPane();
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int height = (int)screenSize.getHeight();
-        int width = (int)screenSize.getWidth();
-        Scene scene = new Scene(root, height, width);
+        Rectangle2D screenSize = Screen.getPrimary().getBounds();
+        int screenHeight = (int)screenSize.getMaxY();
+        int screenWidth = (int)screenSize.getMaxX();
+        Scene scene = new Scene(root, screenHeight, screenWidth);
         
         MenuBar menubar = new MenuBar();
 
@@ -44,6 +49,22 @@ public class Main extends Application {
 
         menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
 
+        GridPane grid = new GridPane();
+        int height = 5;
+        int width = 10;
+        grid.setAlignment(Pos.CENTER);
+        Rectangle[][] gridMatrix = new Rectangle[height][width];
+        for(int i = 0; i < height; i++) {
+            for(int j = 0; j < width; j++) {
+                Rectangle rect = new Rectangle(75, 75);
+                rect.setFill(Color.WHITE);
+                rect.setStroke(Color.BLACK);
+                gridMatrix[i][j] = rect;
+                grid.add(rect, j, i);
+            }
+        }
+
+        root.setCenter(grid);
         root.setTop(menubar);
         primaryStage.setTitle("Circuitry Application");
         primaryStage.setScene(scene);
