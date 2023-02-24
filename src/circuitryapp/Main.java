@@ -3,10 +3,13 @@ package circuitryapp;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.ImageCursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -15,6 +18,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+    private Node circuitElement;
+    private Scene scene;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -63,6 +69,15 @@ public class Main extends Application {
                 grid.add(rect, j, i);
             }
         }
+
+        //Change cursor to whichever circuit element is being used
+        //(Controlled by "circuitElement")
+        //Example of resistor being shown on UI is below.
+        //Will need to have an event listener likely to control which circuit element is replacing the cursor.
+        //Allow keyboard input -- on "r", show resistor, etc. (i.e. create "hotkeys")
+        //Below can be edited out as needed :) Just trying to get something rolling.
+        Image image = new Image("file:src/circuitryapp/resistor.jpg", 75, 75, true, true);
+        scene.setCursor(new ImageCursor(image));
 
         root.setCenter(grid);
         root.setTop(menubar);
