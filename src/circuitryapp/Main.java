@@ -1,17 +1,21 @@
 package circuitryapp;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
@@ -26,35 +30,30 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         BorderPane root = new BorderPane();
 
+        // Scene
         Rectangle2D screenSize = Screen.getPrimary().getBounds();
         int screenHeight = (int)screenSize.getMaxY();
         int screenWidth = (int)screenSize.getMaxX();
-        Scene scene = new Scene(root, screenHeight, screenWidth);
+        scene = new Scene(root, screenHeight, screenWidth);
         
+        // Menu
         MenuBar menubar = new MenuBar();
-
         Menu FileMenu = new Menu("File");
         MenuItem filemenu1 = new MenuItem("New");
         MenuItem filemenu2 = new MenuItem("Save");
-
         Menu EditMenu = new Menu("Edit");
         MenuItem addcomp = new MenuItem("Add component...");
-
         Menu SelectionMenu = new Menu("Selection");
-
         Menu ViewMenu = new Menu("View");
-
         Menu RunMenu = new Menu("Run");
         MenuItem runmenu1 = new MenuItem("Run");
-
         Menu HelpMenu = new Menu("Help");
-
         FileMenu.getItems().addAll(filemenu1, filemenu2);
         EditMenu.getItems().addAll(addcomp);
         RunMenu.getItems().addAll(runmenu1);
-
         menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
 
+        // Grid
         GridPane grid = new GridPane();
         int height = 5;
         int width = 10;
@@ -70,6 +69,15 @@ public class Main extends Application {
             }
         }
 
+        // Mouse coordinates label
+        Label mouseCoord = new Label();
+        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent event) {
+                String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
+                mouseCoord.setText(coord);
+            }
+        });
+
         //Change cursor to whichever circuit element is being used
         //(Controlled by "circuitElement")
         //Example of resistor being shown on UI is below.
@@ -81,6 +89,7 @@ public class Main extends Application {
 
         root.setCenter(grid);
         root.setTop(menubar);
+        root.setBottom(new StackPane(mouseCoord));
         primaryStage.setTitle("Circuitry Application");
         primaryStage.setScene(scene);
         primaryStage.show();
