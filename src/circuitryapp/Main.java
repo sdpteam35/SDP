@@ -1,11 +1,10 @@
 package circuitryapp;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.awt.*;
 
@@ -13,39 +12,19 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        BorderPane root = new BorderPane();
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/main.fxml"));
+        Parent root = loader.load();
+        
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = (int)screenSize.getHeight();
         int width = (int)screenSize.getWidth();
         Scene scene = new Scene(root, height, width);
+        scene.getStylesheets().add(getClass().getResource("../css/styling.css").toExternalForm());
         
-        MenuBar menubar = new MenuBar();
+        VBox mainVbox = (VBox)scene.lookup("#vbox-main");
+        mainVbox.setFillWidth(true);
 
-        Menu FileMenu = new Menu("File");
-        MenuItem filemenu1 = new MenuItem("New");
-        MenuItem filemenu2 = new MenuItem("Save");
-
-        Menu EditMenu = new Menu("Edit");
-        MenuItem addcomp = new MenuItem("Add component...");
-
-        Menu SelectionMenu = new Menu("Selection");
-
-        Menu ViewMenu = new Menu("View");
-
-        Menu RunMenu = new Menu("Run");
-        MenuItem runmenu1 = new MenuItem("Run");
-
-        Menu HelpMenu = new Menu("Help");
-
-        FileMenu.getItems().addAll(filemenu1, filemenu2);
-        EditMenu.getItems().addAll(addcomp);
-        RunMenu.getItems().addAll(runmenu1);
-
-        menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
-
-        root.setTop(menubar);
-        primaryStage.setTitle("Circuitry Application");
+        primaryStage.setTitle("Circuitry");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
