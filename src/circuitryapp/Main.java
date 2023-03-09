@@ -16,6 +16,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -98,20 +99,33 @@ public class Main extends Application {
             }
         }
 
+        //Change cursor to whichever circuit element is being used
+        //(Controlled by "circuitElement")
+        //Example of resistor being shown on UI is below.
+        //Will need to have an event listener likely to control which circuit element is replacing the cursor.
+        //Allow keyboard input -- on "r", show resistor, etc. (i.e. create "hotkeys")
+        //Below can be edited out as needed :) Just trying to get something rolling.
+        Image image = new Image("file:src/circuitryapp/resistor2.jpg", 75, 75, true, true);
+        ImageView iv = new ImageView(image);
+
+        /*
         int radius = squareSize / 3;
         Circle c = new Circle(radius);
         c.setFill(Color.YELLOW);
         c.setStroke(Color.BLUE);
-        int posX = squareSize / 2;
-        int posY = squareSize / 2;
-        Square square = new Square(posX, posY, radius, c);
+        */
+        //int posX = squareSize / 2;
+        int posX = 0;
+        //int posY = squareSize / 2;
+        int posY = 0;
+        Square square = new Square(posX, posY, iv);
         squares.add(square);
-        grid.getChildren().add(c);
+        grid.getChildren().add(iv);
         square.draw();
 
-        c.setOnMousePressed(event -> pressed(event, square));
-        c.setOnMouseDragged(event -> dragged(event, square));
-        c.setOnMouseReleased(event -> release(event, square));
+        iv.setOnMousePressed(event -> pressed(event, square));
+        iv.setOnMouseDragged(event -> dragged(event, square));
+        iv.setOnMouseReleased(event -> release(event, square));
 
         // Mouse coordinates label
         Label mouseCoord = new Label();
@@ -121,15 +135,6 @@ public class Main extends Application {
                 mouseCoord.setText(coord);
             }
         });
-
-        //Change cursor to whichever circuit element is being used
-        //(Controlled by "circuitElement")
-        //Example of resistor being shown on UI is below.
-        //Will need to have an event listener likely to control which circuit element is replacing the cursor.
-        //Allow keyboard input -- on "r", show resistor, etc. (i.e. create "hotkeys")
-        //Below can be edited out as needed :) Just trying to get something rolling.
-        Image image = new Image("file:src/circuitryapp/resistor.jpg", 75, 75, true, true);
-        scene.setCursor(new ImageCursor(image));
 
         //grid.setAlignment(Pos.CENTER);
         root.setCenter(grid);
@@ -145,7 +150,7 @@ public class Main extends Application {
     }
 
     public void pressed(MouseEvent event, Square square) {
-        square.setColor(Color.ORANGE);
+
     }
 
     public void dragged(MouseEvent event, Square square) {
@@ -157,8 +162,10 @@ public class Main extends Application {
     public void release(MouseEvent event, Square square){
         int gridX = (int)square.getX() / squareSize;
         int gridY = (int)square.getY() / squareSize;
-        square.setX(squareSize/2 + squareSize * gridX);
-        square.setY(squareSize/2 + squareSize * gridY);
+        //square.setX(squareSize/2 + squareSize * gridX);
+        //square.setY(squareSize/2 + squareSize * gridY);
+        square.setX(squareSize * gridX);
+        square.setY(squareSize * gridY);
         square.draw();
     }
 

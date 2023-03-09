@@ -1,5 +1,6 @@
 package circuitryapp;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -7,13 +8,12 @@ public class Square {
     private double x;
     private double y;
     private double radius;
-    private Circle c;
+    private ImageView iv;
 
-    public Square(double x, double y, double radius, Circle c){
+    public Square(double x, double y, ImageView iv){
         this.x = x;
         this.y = y;
-        this.radius = radius;
-        this.c = c;
+        this.iv = iv;
     }
 
     public void setY(double y){
@@ -32,13 +32,14 @@ public class Square {
         return x;
     }
 
+    /*
     public void setColor(Color color){
         c.setFill(color);
     }
+    */
 
     public void draw(){
-        c.setRadius(radius);
-        c.setTranslateX(x);
-        c.setTranslateY(y);
+        iv.setTranslateX(x);
+        iv.setTranslateY(y);
     }
 }
