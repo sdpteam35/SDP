@@ -1,13 +1,10 @@
 package circuitryapp;
 
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class Square {
     private double x;
     private double y;
-    private double radius;
     private ImageView iv;
 
     public Square(double x, double y, ImageView iv){

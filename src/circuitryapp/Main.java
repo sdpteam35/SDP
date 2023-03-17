@@ -1,14 +1,8 @@
 package circuitryapp;
 
-import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.geometry.VPos;
-import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -19,13 +13,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -42,60 +32,29 @@ public class Main extends Application {
     private int numSquares = gridHeightSquares * gridWidthSquares;
     private int gridSize = squareSize * gridHeightSquares;
     Rectangle[][] gridMatrix;
+    Square[][] squares;
+    int[][] nodesPresent;
+    MenuBar menubar;
+    Label mouseCoord;
+    Pane grid;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         BorderPane root = new BorderPane();
 
         // Scene
-        Rectangle2D screenSize = Screen.getPrimary().getBounds();
-        int screenHeight = (int)screenSize.getMaxY();
-        int screenWidth = (int)screenSize.getMaxX();
-        scene = new Scene(root, screenHeight, screenWidth);
+        setScreenSize(root);
         
         // Menu
-        MenuBar menubar = new MenuBar();
-        Menu FileMenu = new Menu("File");
-        MenuItem filemenu1 = new MenuItem("New");
-        MenuItem filemenu2 = new MenuItem("Save");
-        Menu EditMenu = new Menu("Edit");
-        MenuItem addcomp = new MenuItem("Add component...");
-        Menu SelectionMenu = new Menu("Selection");
-        Menu ViewMenu = new Menu("View");
-        Menu RunMenu = new Menu("Run");
-        MenuItem runmenu1 = new MenuItem("Run");
-        Menu HelpMenu = new Menu("Help");
-        FileMenu.getItems().addAll(filemenu1, filemenu2);
-        EditMenu.getItems().addAll(addcomp);
-        RunMenu.getItems().addAll(runmenu1);
-        menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
+        setUpMenu();
 
-        Pane grid = new Pane();
-        //GridPane grid = new GridPane();
-        /*
-        for (int i=0; i<gridWidth; i++) {
-            RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setValignment(VPos.CENTER);
-            grid.getRowConstraints().add(rowConstraints);
+        setUpGrid();
 
-            ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setHalignment(HPos.CENTER);
-            grid.getColumnConstraints().add(colConstraints);
-        }
-        */
-
-
-        // Grid
-        ArrayList<Square> squares = new ArrayList<Square>();
-        gridMatrix = new Rectangle[gridHeightSquares][gridWidthSquares];
-        for(int i = 0; i < gridHeight; i += squareSize) {
-            for(int j = 0; j < gridWidth; j += squareSize) {
-                Rectangle rect = new Rectangle(i, j, squareSize, squareSize);
-                rect.setFill(Color.WHITE);
-                rect.setStroke(Color.BLACK);
-                gridMatrix[i/squareSize][j/squareSize] = rect;
-                //squares[i/squareSize][j/squareSize] = new Square()
-                grid.getChildren().add(rect);
+        //set up nodesPresent matrix
+        nodesPresent = new int[gridWidthSquares][gridHeightSquares];
+        for(int i = 0; i < nodesPresent.length; i++) {
+            for(int j = 0; j < nodesPresent[i].length; j++) {
+                nodesPresent[i][j] = 0;
             }
         }
 
@@ -105,21 +64,14 @@ public class Main extends Application {
         //Will need to have an event listener likely to control which circuit element is replacing the cursor.
         //Allow keyboard input -- on "r", show resistor, etc. (i.e. create "hotkeys")
         //Below can be edited out as needed :) Just trying to get something rolling.
-        Image image = new Image("file:src/circuitryapp/resistor2.jpg", 75, 75, true, true);
+        Image image = new Image("file:src/circuitryapp/resistor.png", 75, 75, true, true);
         ImageView iv = new ImageView(image);
 
-        /*
-        int radius = squareSize / 3;
-        Circle c = new Circle(radius);
-        c.setFill(Color.YELLOW);
-        c.setStroke(Color.BLUE);
-        */
-        //int posX = squareSize / 2;
         int posX = 0;
-        //int posY = squareSize / 2;
         int posY = 0;
         Square square = new Square(posX, posY, iv);
-        squares.add(square);
+        squares[0][0] = square;
+        nodesPresent[0][0] = 1;
         grid.getChildren().add(iv);
         square.draw();
 
@@ -128,11 +80,12 @@ public class Main extends Application {
         iv.setOnMouseReleased(event -> release(event, square));
 
         // Mouse coordinates label
-        Label mouseCoord = new Label();
+        mouseCoord = new Label();
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
                 mouseCoord.setText(coord);
+                //mouseCoord.setText(matrixtoString(nodesPresent));
             }
         });
 
@@ -150,7 +103,10 @@ public class Main extends Application {
     }
 
     public void pressed(MouseEvent event, Square square) {
-
+        int gridX = (int)square.getX() / squareSize;
+        int gridY = (int)square.getY() / squareSize;
+        squares[gridX][gridY] = null;
+        nodesPresent[gridY][gridX] = 0;
     }
 
     public void dragged(MouseEvent event, Square square) {
@@ -167,6 +123,63 @@ public class Main extends Application {
         square.setX(squareSize * gridX);
         square.setY(squareSize * gridY);
         square.draw();
+        squares[gridX][gridY] = square;
+        nodesPresent[gridY][gridX] = 1;
+    }
+
+    public String matrixtoString(int[][] m) {
+        String s = "[";
+        for(int i = 0; i < m.length; i++) {
+            s += "[";
+            for(int j = 0; j < m[i].length; j++) {
+                if(j == m[i].length - 1) s += m[i][j] + "]\n";
+                else s += m[i][j] + ", ";
+            }
+        }
+        s += "]";
+        return s;
+    }
+
+    public void setUpMenu() {
+        menubar = new MenuBar();
+        Menu FileMenu = new Menu("File");
+        MenuItem filemenu1 = new MenuItem("New");
+        MenuItem filemenu2 = new MenuItem("Open");
+        MenuItem filemenu3 = new MenuItem("Save");
+        Menu EditMenu = new Menu("Edit");
+        MenuItem addcomp = new MenuItem("Add component...");
+        Menu SelectionMenu = new Menu("Selection");
+        Menu ViewMenu = new Menu("View");
+        Menu RunMenu = new Menu("Run");
+        MenuItem runmenu1 = new MenuItem("Run");
+        Menu HelpMenu = new Menu("Help");
+        FileMenu.getItems().addAll(filemenu1, filemenu2, filemenu3);
+        EditMenu.getItems().addAll(addcomp);
+        RunMenu.getItems().addAll(runmenu1);
+        menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
+    }
+
+    public void setScreenSize(BorderPane root) {
+        Rectangle2D screenSize = Screen.getPrimary().getBounds();
+        int screenHeight = (int)screenSize.getMaxY();
+        int screenWidth = (int)screenSize.getMaxX();
+        scene = new Scene(root, screenHeight, screenWidth);
+    }
+
+    public void setUpGrid() {
+        grid = new Pane();
+        squares = new Square[gridHeightSquares][gridWidthSquares];
+        //ArrayList<Square> squares = new ArrayList<Square>();
+        gridMatrix = new Rectangle[gridHeightSquares][gridWidthSquares];
+        for(int i = 0; i < gridHeight; i += squareSize) {
+            for(int j = 0; j < gridWidth; j += squareSize) {
+                Rectangle rect = new Rectangle(i, j, squareSize, squareSize);
+                rect.setFill(Color.BLACK);
+                rect.setStroke(Color.WHITE);
+                gridMatrix[i/squareSize][j/squareSize] = rect;
+                grid.getChildren().add(rect);
+            }
+        }
     }
 
 }
