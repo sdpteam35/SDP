@@ -6,14 +6,19 @@ public class Circuit {
     public static void main(String [] args) {
         
     }
-    public ArrayList<String> nodes;
+    public ArrayList<Object> parts;   
     public ArrayList<Wire> wires;
 
-    public void addNode() {
+    public Circuit(){
+        parts = new ArrayList<Object>();
+    }
+
+    public void addNode(Object o) {
         //adds node
+        parts.add(o);
         updateWires(); // change to circuit, check on wires
     }
-    public void addWire(Resistor start, Resistor end) {
+    public void addWire(Object start, Object end) {
         //start and end are supposed to be Nodes (abstract part class)
         //adds wire (edge) connecting between a start and end part (node)
         //perhaps coordinates on the grid?
@@ -21,7 +26,12 @@ public class Circuit {
         wires.add(w);
     }
     public void updateWires() {
-        //every time a new node/edge is added, update the math in the wires in the circuit 
+        //every time a new node/edge is added, update the math in the wires in the circuit  
+        for (Wire w : wires) {
+            w.getStart(){
+                
+            }
+        }
     }
     public boolean isValidCircuit() {
         //true if circuit is valid
