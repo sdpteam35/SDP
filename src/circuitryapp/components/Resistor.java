@@ -1,6 +1,6 @@
 package circuitryapp.components;
 
-public class Resistor extends AbstractComponent {
+public class Resistor extends Component {
     private double resistance; //ohms of resistor
 
     public Resistor(String id, ComponentType ctype, int res) {

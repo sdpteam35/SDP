@@ -1,9 +1,9 @@
 package circuitryapp.components;
 
-public class Battery extends AbstractComponent {
+public class Battery extends Component {
     private double voltage;
-    public Battery(String id, ComponentType ctype, double volt){
-        super(id, ctype);
+    public Battery(String id, double volt){
+        super(id, ComponentType.Battery);
         voltage = volt;
     }
     public void changeVoltage(double nvolt) {

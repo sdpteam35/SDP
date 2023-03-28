@@ -3,24 +3,24 @@ package circuitryapp.components;
 public class Wire {
     public double current;
     public double voltageChange;
-    public Object start;
-    public Object end;
+    public Component start;
+    public Component end;
 
-    public Wire(Object  _start, Object _end) {
+    public Wire(Component  _start, Component _end) {
         start = _start;
         end = _end;
     }
 
-    public Wire(double curr, double vChange, Object  _start, Object _end) {
+    public Wire(double curr, double vChange, Component  _start, Component _end) {
         current = curr;
         voltageChange = vChange;
         start = _start;
         end = _end;
     }
-    public Object getStart(){
+    public Component getStart(){
         return start;
     }
-    public Object getEnd(){
+    public Component getEnd(){
         return end;
     }
 }
