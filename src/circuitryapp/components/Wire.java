@@ -22,5 +22,5 @@ public class Wire {
     }
     public Object getEnd(){
         return end;
-    })
+    }
 }
