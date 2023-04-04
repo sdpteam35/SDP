@@ -48,12 +48,23 @@ public class Circuit {
     public void traverseGraph() {
         //updateWires replacement
         //step 1: find battery
+        int indexOfBattery = -1;
         for (int i=0; i<parts.size(); ++i){
             //ComponentType ctype = ComponentType.Battery;
             if (parts.get(i).getType().equals( ComponentType.Battery)) {
                 System.out.println(parts.get(i).getType());
+                indexOfBattery = i;
+                break;
             }
-            //System.out.println(parts.get(i).getType());
+        }
+        if (indexOfBattery == -1) {
+            System.out.println("No battery found in circuit");
+            return;
+        }
+        Component startBattery = parts.get(indexOfBattery);
+        //step 2, check wires
+        for (int i=0; i<startBattery.getOutWires().size(); ++i){
+
         }
     }
     

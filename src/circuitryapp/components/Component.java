@@ -1,4 +1,5 @@
 package circuitryapp.components;
+import java.util.*;
 
 public abstract class Component {
     public enum ComponentType {
@@ -7,6 +8,8 @@ public abstract class Component {
 
     String identifier;
     ComponentType type;
+    public ArrayList<Wire> incomingWires;
+    public ArrayList<Wire> outgoingWires;
 
     public Component(String id, ComponentType ctype) {
         this.identifier = id;
@@ -14,6 +17,12 @@ public abstract class Component {
     }
     public ComponentType getType(){
         return type;
+    }
+    public ArrayList<Wire> getInWires(){
+        return incomingWires;
+    }
+    public ArrayList<Wire> getOutWires(){
+        return outgoingWires;
     }
 
 }
