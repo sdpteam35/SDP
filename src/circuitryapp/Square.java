@@ -1,16 +1,19 @@
 package circuitryapp;
 
+import circuitryapp.components.Component;
 import javafx.scene.image.ImageView;
 
 public class Square {
     private double x;
     private double y;
     private ImageView iv;
+    private Component c;
 
-    public Square(double x, double y, ImageView iv){
+    public Square(double x, double y, ImageView iv, Component c){
         this.x = x;
         this.y = y;
         this.iv = iv;
+        this.c = c;
     }
 
     public void setY(double y){
@@ -27,6 +30,10 @@ public class Square {
 
     public double getX() {
         return x;
+    }
+
+    public Component getComponent() {
+        return c;
     }
 
     /*

@@ -1,5 +1,8 @@
 package circuitryapp;
 
+import circuitryapp.components.Component;
+import circuitryapp.components.Resistor;
+import circuitryapp.components.Component.ComponentType;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
@@ -37,6 +40,7 @@ public class Main extends Application {
     MenuBar menubar;
     Label mouseCoord;
     Pane grid;
+    Circuit circuit;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -58,6 +62,8 @@ public class Main extends Application {
             }
         }
 
+        circuit = new Circuit();
+
         //Change cursor to whichever circuit element is being used
         //(Controlled by "circuitElement")
         //Example of resistor being shown on UI is below.
@@ -66,14 +72,9 @@ public class Main extends Application {
         //Below can be edited out as needed :) Just trying to get something rolling.
         Image image = new Image("file:src/circuitryapp/resistor.png", 75, 75, true, true);
         ImageView iv = new ImageView(image);
+        Resistor r = new Resistor("resistor1", ComponentType.Resistor, 0);
 
-        int posX = 0;
-        int posY = 0;
-        Square square = new Square(posX, posY, iv);
-        squares[0][0] = square;
-        nodesPresent[0][0] = 1;
-        grid.getChildren().add(iv);
-        square.draw();
+        Square square = addComponentToGrid(r, iv);
 
         iv.setOnMousePressed(event -> pressed(event, square));
         iv.setOnMouseDragged(event -> dragged(event, square));
@@ -174,12 +175,22 @@ public class Main extends Application {
         for(int i = 0; i < gridHeight; i += squareSize) {
             for(int j = 0; j < gridWidth; j += squareSize) {
                 Rectangle rect = new Rectangle(i, j, squareSize, squareSize);
-                rect.setFill(Color.BLACK);
-                rect.setStroke(Color.WHITE);
+                rect.setFill(Color.WHITE);
+                //rect.setStroke(Color.BLACK);
                 gridMatrix[i/squareSize][j/squareSize] = rect;
                 grid.getChildren().add(rect);
             }
         }
+    }
+
+    public Square addComponentToGrid(Component c, ImageView iv) {
+        Square square = new Square(0, 0, iv, c);
+        squares[0][0] = square;
+        nodesPresent[0][0] = 1;
+        grid.getChildren().add(iv);
+        square.draw();
+        circuit.addNode(c);
+        return square;
     }
 
 }
