@@ -70,7 +70,7 @@ public class Main extends Application {
         //Will need to have an event listener likely to control which circuit element is replacing the cursor.
         //Allow keyboard input -- on "r", show resistor, etc. (i.e. create "hotkeys")
         //Below can be edited out as needed :) Just trying to get something rolling.
-        Image image = new Image("file:src/circuitryapp/resistor.png", 75, 75, true, true);
+        Image image = new Image("file:src/circuitryapp/resistor2.jpg", 75, 75, true, true);
         ImageView iv = new ImageView(image);
         Resistor r = new Resistor("resistor1", ComponentType.Resistor, 0);
 
