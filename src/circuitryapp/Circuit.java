@@ -45,27 +45,41 @@ public class Circuit {
         //Get's coords of a node/edge
         return -1;
     }
-    public void traverseGraph() {
+    public double traverseGraph() {
+        double totalResistance = 0;
         //updateWires replacement
         //step 1: find battery
-        int indexOfBattery = -1;
-        for (int i=0; i<parts.size(); ++i){
-            //ComponentType ctype = ComponentType.Battery;
-            if (parts.get(i).getType().equals( ComponentType.Battery)) {
-                System.out.println(parts.get(i).getType());
-                indexOfBattery = i;
-                break;
-            }
-        }
+        int indexOfBattery = findBattery();
         if (indexOfBattery == -1) {
             System.out.println("No battery found in circuit");
-            return;
+            return totalResistance;
         }
         Component startBattery = parts.get(indexOfBattery);
         //step 2, check wires
         for (int i=0; i<startBattery.getOutWires().size(); ++i){
-
+            //start traversing wires
         }
+        Wire next = startBattery.getOutWires().get(0);
+        Component curr = next.getEnd();
+        while (curr != startBattery) {
+            if (curr.getType().equals(ComponentType.Resistor)) {
+                Resistor rcurr = (Resistor)curr;
+                totalResistance += rcurr.getResistance();
+            }
+            next = curr.getOutWires().get(0);
+            curr = next.getEnd();
+        }
+        return totalResistance;
+    }
+    public int findBattery() {
+        for (int i=0; i<parts.size(); ++i){
+            //ComponentType ctype = ComponentType.Battery;
+            if (parts.get(i).getType().equals(ComponentType.Battery)) {
+                System.out.println(parts.get(i).getType());
+                return i;
+            }
+        }
+        return -1;
     }
     
 }

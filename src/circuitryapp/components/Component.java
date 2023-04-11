@@ -14,6 +14,8 @@ public abstract class Component {
     public Component(String id, ComponentType ctype) {
         this.identifier = id;
         this.type = ctype;
+        incomingWires = new ArrayList<Wire>();
+        outgoingWires = new ArrayList<Wire>();
     }
     public ComponentType getType(){
         return type;

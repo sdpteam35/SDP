@@ -3,8 +3,8 @@ package circuitryapp.components;
 public class Resistor extends Component {
     private double resistance; //ohms of resistor
 
-    public Resistor(String id, ComponentType ctype, int res) {
-        super("Resistor", ctype);
+    public Resistor(String id, double res) {
+        super(id, ComponentType.Resistor);
         resistance = res;
     }
 
