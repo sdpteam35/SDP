@@ -3,13 +3,15 @@ import java.util.*;
 
 public abstract class Component {
     public enum ComponentType {
-        Battery, Resistor, Conductor, Inductor
+        Battery, Resistor, Conductor, Inductor, Node
     }
 
     String identifier;
     ComponentType type;
     public ArrayList<Wire> incomingWires;
     public ArrayList<Wire> outgoingWires;
+    public Component inComponent;
+    public Component outComponent;
 
     public Component(String id, ComponentType ctype) {
         this.identifier = id;
@@ -20,11 +22,27 @@ public abstract class Component {
     public ComponentType getType(){
         return type;
     }
+    public Component getInComp(){
+        return inComponent;
+    }
+    public Component getOutComp(){
+        return outComponent;
+    }
+    public void setInComp(Component nin){
+        inComponent = nin;
+    }
+    public void setOutComp(Component nout){
+        outComponent = nout;
+    }
+
+
+
+
+
     public ArrayList<Wire> getInWires(){
         return incomingWires;
     }
     public ArrayList<Wire> getOutWires(){
         return outgoingWires;
     }
-
 }

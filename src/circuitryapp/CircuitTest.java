@@ -13,7 +13,30 @@ public class CircuitTest {
         c.addNode(r1);
         c.addNode(r2);
         c.addNode(r3);
-        Wire w1 = new Wire(b,r1);
+        Node n1 = new Node("node1");
+        Node n2 = new Node("node2");
+        c.addNode(n1);
+        c.addNode(n2);
+
+        b.setOutComp(n1);
+        n1.getInParts().add(b);
+        n1.getOutParts().add(r1);
+        n1.getOutParts().add(r2);
+
+        r1.setInComp(n1);
+        r1.setOutComp(n2);
+        r2.setInComp(n2);
+        r2.setOutComp(n2);
+
+        n2.getInParts().add(r1);
+        n2.getInParts().add(r2);
+        n2.getOutParts().add(r2);
+
+        r3.setInComp(n2);
+        r3.setOutComp(b);
+        b.setInComp(r3);
+
+        /*Wire w1 = new Wire(b,r1);
         b.getOutWires().add(w1);
         Wire w2 = new Wire(r1,r2);
         r1.getOutWires().add(w2);
@@ -22,7 +45,7 @@ public class CircuitTest {
         Wire w4 = new Wire(r3,b);
         r3.getOutWires().add(w4);
         
-        double totalRes = c.traverseGraph();
-        System.out.println("Total Resistance in Circuit: " + totalRes);
+        double totalRes = c.totalResistanceWires();*/
+        //System.out.println("Total Resistance in Circuit: " + totalRes);
     }
 }

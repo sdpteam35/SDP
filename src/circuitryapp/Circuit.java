@@ -45,7 +45,38 @@ public class Circuit {
         //Get's coords of a node/edge
         return -1;
     }
-    public double traverseGraph() {
+
+    public double totalResistanceNode(){
+        double totalResistance = 0;
+        int indexOfBattery = findBattery();
+        if (indexOfBattery == -1) {
+            System.out.println("No battery found in circuit");
+            return totalResistance;
+        }
+        Component startBattery = parts.get(indexOfBattery);
+        Component curr = startBattery.getOutComp();
+        while (curr != startBattery) {
+            if (curr.getType().equals(ComponentType.Node)){
+                // call Node update function
+                // call incomingResistance function
+                // TotalResistance += incomingResistance();
+            }
+            if (curr.getType().equals(ComponentType.Resistor)){
+                Resistor rcurr = (Resistor)curr;
+                totalResistance += rcurr.getResistance();
+            }
+            curr = curr.getOutComp();
+        }
+        return totalResistance;
+    }
+    public void NodeSpace(){
+
+    }
+
+
+
+
+    public double totalResistanceWires() {
         double totalResistance = 0;
         //updateWires replacement
         //step 1: find battery
