@@ -57,8 +57,9 @@ public class Circuit {
         Component curr = startBattery.getOutComp();
         while (curr != startBattery) {
             if (curr.getType().equals(ComponentType.Node)){
-                // call Node update function
-                // call incomingResistance function
+                Node ncurr = (Node)curr;
+                // call Node update function - get voltage and resistance
+                // call incomingResistance function - return resistance incoming into Node
                 // TotalResistance += incomingResistance();
             }
             if (curr.getType().equals(ComponentType.Resistor)){
