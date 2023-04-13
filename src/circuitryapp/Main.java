@@ -40,7 +40,6 @@ public class Main extends Application {
     private int gridWidth = squareSize * gridWidthSquares;
     Rectangle[][] gridMatrix;
     Square[][] squares;
-    int[][] nodesPresent;
     MenuBar menubar;
     Label mouseCoord;
     Pane grid;
@@ -68,21 +67,12 @@ public class Main extends Application {
 
         setUpGrid();
 
-        //set up nodesPresent matrix
-        nodesPresent = new int[gridHeightSquares][gridWidthSquares];
-        for(int i = 0; i < nodesPresent.length; i++) {
-            for(int j = 0; j < nodesPresent[i].length; j++) {
-                nodesPresent[i][j] = 0;
-            }
-        }
-
         // Mouse coordinates label
         mouseCoord = new Label();
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
                 mouseCoord.setText(coord);
-                //mouseCoord.setText(matrixtoString(nodesPresent));
                 //mouseCoord.setText(squareMatrixtoString(squares));
             }
         });
@@ -104,7 +94,6 @@ public class Main extends Application {
         int gridX = (int)square.getX() / squareSize;
         int gridY = (int)square.getY() / squareSize;
         squares[gridY][gridX] = null;
-        nodesPresent[gridY][gridX] = 0;
     }
 
     public void dragged(MouseEvent event, Square square) {
@@ -122,25 +111,11 @@ public class Main extends Application {
         square.setY(squareSize * gridY);
         square.draw();
         squares[gridY][gridX] = square;
-        nodesPresent[gridY][gridX] = 1;
     }
 
     public void clicked(MouseEvent event, Square square) {
         ImageView iv = square.getImageView();
         iv.setRotate(iv.getRotate() + 90);
-    }
-
-    public String matrixtoString(int[][] m) {
-        String s = "[";
-        for(int i = 0; i < m.length; i++) {
-            s += "[";
-            for(int j = 0; j < m[i].length; j++) {
-                if(j == m[i].length - 1) s += m[i][j] + "]\n";
-                else s += m[i][j] + ", ";
-            }
-        }
-        s += "]";
-        return s;
     }
 
     public String squareMatrixtoString(Square[][] m) {
@@ -224,7 +199,6 @@ public class Main extends Application {
             }
         }
         else squares[0][0] = square;
-        nodesPresent[y][x] = 1;
         square.setX(squareSize * x);
         square.setY(squareSize * y);
         grid.getChildren().add(iv);
