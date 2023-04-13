@@ -51,6 +51,10 @@ public class Square {
         return w;
     }
 
+    public ImageView getImageView() {
+        return iv;
+    }
+
     public void draw(){
         iv.setTranslateX(x);
         iv.setTranslateY(y);

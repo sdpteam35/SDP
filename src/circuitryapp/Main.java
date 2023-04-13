@@ -125,6 +125,11 @@ public class Main extends Application {
         nodesPresent[gridY][gridX] = 1;
     }
 
+    public void clicked(MouseEvent event, Square square) {
+        ImageView iv = square.getImageView();
+        iv.setRotate(iv.getRotate() + 90);
+    }
+
     public String matrixtoString(int[][] m) {
         String s = "[";
         for(int i = 0; i < m.length; i++) {
@@ -304,6 +309,7 @@ public class Main extends Application {
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
             iv.setOnMouseReleased(event -> release(event, square));
+            iv.setOnMouseClicked(event -> clicked(event, square));
             newWindow.close();
         });
 
@@ -338,6 +344,7 @@ public class Main extends Application {
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
             iv.setOnMouseReleased(event -> release(event, square));
+            iv.setOnMouseClicked(event -> clicked(event, square));
             newWindow.close();
         });
 
