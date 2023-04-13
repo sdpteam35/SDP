@@ -34,7 +34,9 @@ public abstract class Component {
     public void setOutComp(Component nout){
         outComponent = nout;
     }
-
+    public String getID() {
+        return identifier;
+    }
 
 
 

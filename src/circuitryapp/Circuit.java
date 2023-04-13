@@ -56,20 +56,38 @@ public class Circuit {
         Component startBattery = parts.get(indexOfBattery);
         Component curr = startBattery.getOutComp();
         while (curr != startBattery) {
+            System.out.println(curr.getID());
+            boolean visitedNode = false; // have we visisted a node
             if (curr.getType().equals(ComponentType.Node)){
                 Node ncurr = (Node)curr;
-                // call Node update function - get voltage and resistance
-                // call incomingResistance function - return resistance incoming into Node
-                // TotalResistance += incomingResistance();
+                ncurr.UpdateNode(); // call Node update function - get voltage and resistance
+                totalResistance += ncurr.getNodeResistance(); // TotalResistance += incomingResistance();
+                curr = ncurr.getOutParts().get(0); // grab first outoging connection
+                visitedNode = true; // we've set current 
             }
-            if (curr.getType().equals(ComponentType.Resistor)){
+            /*if (curr.getType().equals(ComponentType.Resistor)){
                 Resistor rcurr = (Resistor)curr;
                 totalResistance += rcurr.getResistance();
+            }*/
+            if (visitedNode != true) { // have we set current
+                curr = curr.getOutComp();
             }
-            curr = curr.getOutComp();
+        }
+        // updateNode but for startBattery
+        Component currentComponent = startBattery.getInComp();
+        while (true) {
+            if (currentComponent.getType() == ComponentType.Node) {
+                break; 
+            }
+            if (currentComponent.getType() == ComponentType.Resistor) {
+                Resistor r = (Resistor)currentComponent;
+                totalResistance += r.getResistance();
+            }
+            currentComponent = currentComponent.getInComp();
         }
         return totalResistance;
     }
+
     public void NodeSpace(){
 
     }

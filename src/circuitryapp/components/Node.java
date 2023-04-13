@@ -25,7 +25,7 @@ public class Node extends Component{
         return outgoingVoltage;
     }
 
-    public double getNodeResistnace(){
+    public double getNodeResistance(){
         return incomingResistance;
     }
 
