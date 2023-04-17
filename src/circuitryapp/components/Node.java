@@ -1,6 +1,8 @@
 package circuitryapp.components;
 import java.util.*;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 public class Node extends Component{
     ArrayList<Component> incomingParts;
     ArrayList<Component> outgoingParts;
@@ -40,14 +42,21 @@ public class Node extends Component{
         ArrayList<Double> voltageTerms = new ArrayList<Double>();
 
         for (int i = 0; i < incomingParts.size(); i++){ //The main loop, this calculates incoming voltage and resistance
-            double Res = 0;
-            double V = 0;
+            ArrayList<Double> resistanceSum = new ArrayList<Double>(); //To be used to calculate the resistance in series for each path
+            Node endingNode = null; //To be used to avoid repeated calculations at the ending node
+            double Res = 0; //Value to be stored when solving resistance in parallel
+            double V = 0; //Value to be stored when solving voltage in parallel
             Component currentComponent = incomingParts.get(i);
 
             while ( true ) {
 
                 if (currentComponent.getType() == ComponentType.Node) {
                     Node n = (Node)currentComponent;
+                    if (n == endingNode) {
+                        break; // We want to avoid adding the same node multiple times as each path will end at this particular node
+                    }
+
+                    endingNode = n; //Update the "ending node" for the previous conditional
                     V = n.getNodeVoltage();
                     voltageTerms.add(V);
                     break; 
@@ -62,13 +71,16 @@ public class Node extends Component{
 
                 if (currentComponent.getType() == ComponentType.Resistor) {
                     Resistor r = (Resistor)currentComponent;
-                    Res += r.getResistance();
-                    resistanceTerms.add(Res);
+                    resistanceSum.add(r.getResistance()); //Add to the array to solve the resistance in series
                 }
 
                 currentComponent = currentComponent.getInComp(); //Go back one previous component
 
             }
+
+            for (Double r : resistanceSum){Res += r;} //Perform series summing
+            resistanceTerms.add(Res); //Add to the array for parallel summing
+            
         }
 
         //Doing the calculations
