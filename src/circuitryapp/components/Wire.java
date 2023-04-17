@@ -6,8 +6,7 @@ public class Wire {
     public Component start;
     public Component end;
 
-    public Wire() {
-    }
+    public Wire() {}
 
     public void setStart(Component c) {
         start = c;

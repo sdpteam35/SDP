@@ -2,6 +2,7 @@ package circuitryapp;
 
 import circuitryapp.components.Battery;
 import circuitryapp.components.Component;
+import circuitryapp.components.Node;
 import circuitryapp.components.Resistor;
 import circuitryapp.components.Wire;
 import circuitryapp.components.Component.ComponentType;
@@ -48,12 +49,14 @@ public class Main extends Application {
     Parent elementSelectionRoot;
     Parent resistorSelectionRoot;
     Parent batterySelectionRoot;
+    Parent nodeSelectionRoot;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         elementSelectionRoot = FXMLLoader.load(getClass().getResource("elementSelectionScreen.fxml"));
         resistorSelectionRoot = FXMLLoader.load(getClass().getResource("resistorSelectionScreen.fxml"));
         batterySelectionRoot = FXMLLoader.load(getClass().getResource("batterySelectionScreen.fxml"));
+        nodeSelectionRoot = FXMLLoader.load(getClass().getResource("nodeSelectionScreen.fxml"));
         BorderPane root = new BorderPane();
 
         circuit = new Circuit();
@@ -109,18 +112,16 @@ public class Main extends Application {
         square.setY(squareSize * gridY);
         square.draw();
         squares[gridY][gridX] = square;
-        System.out.println("gridX: " + gridX);
-        System.out.println("gridY: " + gridY);
-        if (square.getWire() != null && gridX > 0 && squares[gridY][gridX - 1] != null && squares[gridY][gridX + 1] != null) {
-            if(squares[gridY][gridX - 1].getComponent() != null) square.getWire().setStart(squares[gridY][gridX - 1].getComponent());
-            if(squares[gridY][gridX + 1].getComponent() != null) square.getWire().setEnd(squares[gridY][gridX + 1].getComponent());
-        }
+        //System.out.println("gridX: " + gridX);
+        //System.out.println("gridY: " + gridY);
     }
     
 
     public void clicked(MouseEvent event, Square square) {
         ImageView iv = square.getImageView();
         iv.setRotate(iv.getRotate() + 90);
+        if(iv.getRotate() == 360) iv.setRotate(0);
+        System.out.println(iv.getRotate());
     }
 
     public String squareMatrixtoString(Square[][] m) {
@@ -207,11 +208,15 @@ public class Main extends Application {
         Tooltip t;
         if(c.getType() == ComponentType.Resistor) {
             Resistor r = (Resistor)square.getComponent();
-            t = new Tooltip("Resistance: " + r.getResistance());
+            t = new Tooltip("ID: " + r.getID() + "\nResistance: " + r.getResistance());
+        }
+        if(c.getType() == ComponentType.Battery) {
+            Battery b = (Battery)square.getComponent();
+            t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage());
         }
         else {
-            Battery b = (Battery)square.getComponent();
-            t = new Tooltip("Voltage: " + b.getVoltage());
+            Node n = (Node)square.getComponent();
+            t = new Tooltip("ID: " + n.getID());
         }
         Tooltip.install(iv, t);
         return square;
@@ -287,6 +292,16 @@ public class Main extends Application {
                     newWindow.close();
                 });
 
+                Button node = (Button) scene.lookup("#node-button");
+                Image nodeImage = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+                ImageView nodeImageView = new ImageView(nodeImage);
+                node.setGraphic(nodeImageView);
+                node.setContentDisplay(ContentDisplay.TOP);
+                node.setOnAction(e -> {
+                    openNodeSelectionWindow();
+                    newWindow.close();
+                });
+
                 newWindow.show();
             }
         };
@@ -305,17 +320,20 @@ public class Main extends Application {
 
         final double[] resistanceVal = {0};
         TextField resistance = (TextField) scene.lookup("#resistance-input");
-        resistance.setOnAction(e -> {
-            String text = resistance.getText();
-            if (isNumeric(text)) {
-                resistanceVal[0] = Double.parseDouble(text);
+        TextField id = (TextField) scene.lookup("#resistor-id");
+        Button submit = (Button) scene.lookup("#submit-button");
+        submit.setOnAction(e -> {
+            String resistanceInput = resistance.getText();
+            if (isNumeric(resistanceInput)) {
+                resistanceVal[0] = Double.parseDouble(resistanceInput);
                 System.out.println(resistanceVal);
             } else {
                 System.out.println("Not a number");
             }
+            String idInput = id.getText();
             Image image = new Image("file:src/circuitryapp/resistor_clear_bkgrd.png", 75, 75, true, true);
             ImageView iv = new ImageView(image);
-            Resistor r = new Resistor("resistor1", resistanceVal[0]);
+            Resistor r = new Resistor(idInput, resistanceVal[0]);
             Square square = addComponentToGrid(r, iv);
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
@@ -340,17 +358,20 @@ public class Main extends Application {
 
         final double[] voltageVal = {0};
         TextField voltage = (TextField) scene.lookup("#voltage-input");
-        voltage.setOnAction(e -> {
-            String text = voltage.getText();
-            if (isNumeric(text)) {
-                voltageVal[0] = Double.parseDouble(text);
+        TextField id = (TextField) scene.lookup("#battery-id");
+        Button submit = (Button) scene.lookup("#submit-button");
+        submit.setOnAction(e -> {
+            String voltageInput = voltage.getText();
+            if (isNumeric(voltageInput)) {
+                voltageVal[0] = Double.parseDouble(voltageInput);
                 System.out.println(voltageVal);
             } else {
                 System.out.println("Not a number");
             }
+            String idInput = id.getText();
             Image image = new Image("file:src/circuitryapp/battery_clear_bkgrd.png", 75, 75, true, true);
             ImageView iv = new ImageView(image);
-            Battery b = new Battery("battery", voltageVal[0]);
+            Battery b = new Battery(idInput, voltageVal[0]);
             Square square = addComponentToGrid(b, iv);
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
@@ -371,6 +392,35 @@ public class Main extends Application {
         iv.setOnMouseDragged(event -> dragged(event, square));
         iv.setOnMouseReleased(event -> release(event, square));
         iv.setOnMouseClicked(event -> clicked(event, square));
+    }
+
+    public void openNodeSelectionWindow() {
+        StackPane layout = new StackPane();
+        layout.getChildren().setAll(nodeSelectionRoot);
+        Scene scene = new Scene(layout, 600, 400);
+
+        Stage newWindow = new Stage();
+        newWindow.setTitle("New Node");
+        newWindow.setScene(scene);
+        newWindow.setX(200);
+        newWindow.setY(100);
+        
+        TextField id = (TextField) scene.lookup("#node-id");
+        Button submit = (Button) scene.lookup("#submit-button");
+        submit.setOnAction(e -> {
+            String idInput = id.getText();
+            Image image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+            ImageView iv = new ImageView(image);
+            Node n = new Node(idInput);
+            Square square = addComponentToGrid(n, iv);
+            iv.setOnMousePressed(event -> pressed(event, square));
+            iv.setOnMouseDragged(event -> dragged(event, square));
+            iv.setOnMouseReleased(event -> release(event, square));
+            iv.setOnMouseClicked(event -> clicked(event, square));
+            newWindow.close();
+        });
+
+        newWindow.show();
     }
 
     public static boolean isNumeric(String str) {

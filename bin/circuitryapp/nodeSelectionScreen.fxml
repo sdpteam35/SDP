@@ -12,22 +12,9 @@
    <children>
       <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <HBox prefHeight="33.0" prefWidth="595.0">
+            <HBox prefHeight="31.0" prefWidth="595.0">
                <children>
-                  <TextField id="voltage-input" />
-                  <Label text="Voltage">
-                     <HBox.margin>
-                        <Insets left="10.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-               </children>
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="31.0" prefWidth="600.0">
-               <children>
-                  <TextField id="battery-id" prefHeight="26.0" prefWidth="159.0" />
+                  <TextField id="node-id" />
                   <Label text="ID">
                      <HBox.margin>
                         <Insets left="10.0" top="5.0" />
