@@ -22,7 +22,8 @@
         </rowConstraints>
          <children>
             <Button id="resistor-button" fx:id="resistorButton" alignment="CENTER" mnemonicParsing="false" text="Resistor" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Button id="battery-button" alignment="CENTER" mnemonicParsing="false" text="Battery" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Button id="battery-button" fx:id="batteryButton" alignment="CENTER" mnemonicParsing="false" text="Battery" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Button id="wire-button" fx:id="wireButton" alignment="CENTER" mnemonicParsing="false" text="Wire" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
    </children>

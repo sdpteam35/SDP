@@ -59,4 +59,9 @@ public class Square {
         iv.setTranslateX(x);
         iv.setTranslateY(y);
     }
+
+    public String toString() {
+        if(c != null) return "{" + x + ", " + y + ", " + c.getID() + "}";
+        else return "{" + x + ", " + y + ", " + "Wire" + "}";
+    }
 }

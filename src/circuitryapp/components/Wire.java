@@ -6,17 +6,17 @@ public class Wire {
     public Component start;
     public Component end;
 
-    public Wire(Component  _start, Component _end) {
-        start = _start;
-        end = _end;
+    public Wire() {
     }
 
-    public Wire(double curr, double vChange, Component  _start, Component _end) {
-        current = curr;
-        voltageChange = vChange;
-        start = _start;
-        end = _end;
+    public void setStart(Component c) {
+        start = c;
     }
+
+    public void setEnd(Component c) {
+        end = c;
+    }
+
     public Component getStart(){
         return start;
     }

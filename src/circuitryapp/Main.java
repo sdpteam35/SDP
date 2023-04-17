@@ -3,6 +3,7 @@ package circuitryapp;
 import circuitryapp.components.Battery;
 import circuitryapp.components.Component;
 import circuitryapp.components.Resistor;
+import circuitryapp.components.Wire;
 import circuitryapp.components.Component.ComponentType;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -47,8 +48,6 @@ public class Main extends Application {
     Parent elementSelectionRoot;
     Parent resistorSelectionRoot;
     Parent batterySelectionRoot;
-    //double resistanceVal;
-
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -65,6 +64,7 @@ public class Main extends Application {
         // Menu
         setUpMenu();
 
+        grid = new Pane();
         setUpGrid();
 
         // Mouse coordinates label
@@ -72,8 +72,8 @@ public class Main extends Application {
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
-                mouseCoord.setText(coord);
-                //mouseCoord.setText(squareMatrixtoString(squares));
+                //mouseCoord.setText(coord);
+                mouseCoord.setText(squareMatrixtoString(squares));
             }
         });
 
@@ -105,13 +105,18 @@ public class Main extends Application {
     public void release(MouseEvent event, Square square){
         int gridX = (int)square.getX() / squareSize;
         int gridY = (int)square.getY() / squareSize;
-        //square.setX(squareSize/2 + squareSize * gridX);
-        //square.setY(squareSize/2 + squareSize * gridY);
         square.setX(squareSize * gridX);
         square.setY(squareSize * gridY);
         square.draw();
         squares[gridY][gridX] = square;
+        System.out.println("gridX: " + gridX);
+        System.out.println("gridY: " + gridY);
+        if (square.getWire() != null && gridX > 0 && squares[gridY][gridX - 1] != null && squares[gridY][gridX + 1] != null) {
+            if(squares[gridY][gridX - 1].getComponent() != null) square.getWire().setStart(squares[gridY][gridX - 1].getComponent());
+            if(squares[gridY][gridX + 1].getComponent() != null) square.getWire().setEnd(squares[gridY][gridX + 1].getComponent());
+        }
     }
+    
 
     public void clicked(MouseEvent event, Square square) {
         ImageView iv = square.getImageView();
@@ -123,11 +128,6 @@ public class Main extends Application {
         for(int i = 0; i < m.length; i++) {
             s += "[";
             for(int j = 0; j < m[i].length; j++) {
-                /*
-                if(m[i][j] == null) s += "None, ";
-                else s += "Square, ";
-                if(j == m[i].length - 1) s += "]\n";
-                */
                 if(j == m[i].length - 1) s += m[i][j] + "]\n";
                 else s += m[i][j] + ", ";
             }
@@ -145,13 +145,15 @@ public class Main extends Application {
         Menu EditMenu = new Menu("Edit");
         MenuItem addcomp = new MenuItem("Add component...");
         addcomp.setOnAction(openComponentWindow());
+        MenuItem clearGrid = new MenuItem("Clear Grid");
+        clearGrid.setOnAction(clearGrid());
         Menu SelectionMenu = new Menu("Selection");
         Menu ViewMenu = new Menu("View");
         Menu RunMenu = new Menu("Run");
         MenuItem runmenu1 = new MenuItem("Run");
         Menu HelpMenu = new Menu("Help");
         FileMenu.getItems().addAll(filemenu1, filemenu2, filemenu3);
-        EditMenu.getItems().addAll(addcomp);
+        EditMenu.getItems().addAll(addcomp, clearGrid);
         RunMenu.getItems().addAll(runmenu1);
         menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
     }
@@ -164,9 +166,7 @@ public class Main extends Application {
     }
 
     public void setUpGrid() {
-        grid = new Pane();
         squares = new Square[gridHeightSquares][gridWidthSquares];
-        //ArrayList<Square> squares = new ArrayList<Square>();
         gridMatrix = new Rectangle[gridWidthSquares][gridHeightSquares];
         for(int i = 0; i < gridHeight; i += squareSize) {
             for(int j = 0; j < gridWidth; j += squareSize) {
@@ -217,6 +217,33 @@ public class Main extends Application {
         return square;
     }
 
+    public Square addWireToGrid(Wire w, ImageView iv) {
+        Square square = new Square(0, 0, iv, w);
+        int x = 0;
+        int y = 0;
+        boolean conditionMet = false;
+        if(!(squares[0][0] == null)) {
+            for(int i = 0; i < squares.length; i++) {
+                for(int j = 1; j < squares[i].length; j++) {
+                    if(squares[i][j] == null) {
+                        squares[i][j] = square;
+                        x = j;
+                        y = i;
+                        conditionMet = true;
+                        break;
+                    }
+                }
+                if(conditionMet) break;
+            }
+        }
+        else squares[0][0] = square;
+        square.setX(squareSize * x);
+        square.setY(squareSize * y);
+        grid.getChildren().add(iv);
+        square.draw();
+        return square;
+    }
+
     private EventHandler<ActionEvent> openComponentWindow() {
         return new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
@@ -247,6 +274,16 @@ public class Main extends Application {
                 battery.setContentDisplay(ContentDisplay.TOP);
                 battery.setOnAction(e -> {
                     openBatterySelectWindow();
+                    newWindow.close();
+                });
+
+                Button wire = (Button) scene.lookup("#wire-button");
+                Image wireImage = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
+                ImageView wireImageView = new ImageView(wireImage);
+                wire.setGraphic(wireImageView);
+                wire.setContentDisplay(ContentDisplay.TOP);
+                wire.setOnAction(e -> {
+                    createWire();
                     newWindow.close();
                 });
 
@@ -325,6 +362,17 @@ public class Main extends Application {
         newWindow.show();
     }
 
+    public void createWire() {
+        Image image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
+        ImageView iv = new ImageView(image);
+        Wire w = new Wire();
+        Square square = addWireToGrid(w, iv);
+        iv.setOnMousePressed(event -> pressed(event, square));
+        iv.setOnMouseDragged(event -> dragged(event, square));
+        iv.setOnMouseReleased(event -> release(event, square));
+        iv.setOnMouseClicked(event -> clicked(event, square));
+    }
+
     public static boolean isNumeric(String str) {
         try {
             Double.parseDouble(str);
@@ -332,5 +380,14 @@ public class Main extends Application {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    private EventHandler<ActionEvent> clearGrid() {
+        return new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                grid.getChildren().removeAll(grid.getChildren());
+                setUpGrid();
+            }
+        };
     }
 }
