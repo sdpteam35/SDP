@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -56,7 +57,7 @@ public class Main extends Application {
     private int wireNum;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         elementSelectionRoot = FXMLLoader.load(getClass().getResource("elementSelectionScreen.fxml"));
         resistorSelectionRoot = FXMLLoader.load(getClass().getResource("resistorSelectionScreen.fxml"));
         batterySelectionRoot = FXMLLoader.load(getClass().getResource("batterySelectionScreen.fxml"));
@@ -72,7 +73,7 @@ public class Main extends Application {
 
         // Scene
         setScreenSize(root);
-        
+
         // Menu
         setUpMenu();
 
@@ -82,14 +83,15 @@ public class Main extends Application {
         // Mouse coordinates label
         mouseCoord = new Label();
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent event) {
+            @Override
+            public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
                 //mouseCoord.setText(coord);
                 mouseCoord.setText(squareMatrixtoString(squares));
             }
         });
 
-        //grid.setAlignment(Pos.CENTER);
+        // grid.setAlignment(Pos.CENTER);
         root.setCenter(grid);
         root.setTop(menubar);
         root.setBottom(new StackPane(mouseCoord));
@@ -103,8 +105,8 @@ public class Main extends Application {
     }
 
     public void pressed(MouseEvent event, Square square) {
-        int gridX = (int)square.getX() / squareSize;
-        int gridY = (int)square.getY() / squareSize;
+        int gridX = (int) square.getX() / squareSize;
+        int gridY = (int) square.getY() / squareSize;
         squares[gridY][gridX] = null;
     }
 
@@ -114,32 +116,40 @@ public class Main extends Application {
         square.draw();
     }
 
-    public void release(MouseEvent event, Square square){
-        int gridX = (int)square.getX() / squareSize;
-        int gridY = (int)square.getY() / squareSize;
+    public void release(MouseEvent event, Square square) {
+        int gridX = (int) square.getX() / squareSize;
+        int gridY = (int) square.getY() / squareSize;
         square.setX(squareSize * gridX);
         square.setY(squareSize * gridY);
         square.draw();
         squares[gridY][gridX] = square;
-        //System.out.println("gridX: " + gridX);
-        //System.out.println("gridY: " + gridY);
+        // System.out.println("gridX: " + gridX);
+        // System.out.println("gridY: " + gridY);
     }
-    
 
-    public void clicked(MouseEvent event, Square square) {
-        ImageView iv = square.getImageView();
-        iv.setRotate(iv.getRotate() + 90);
-        if(iv.getRotate() == 360) iv.setRotate(0);
-        System.out.println(iv.getRotate());
+    public void clicked(MouseEvent event, Component component) {
+        if (event.getButton() == MouseButton.SECONDARY) {
+            System.out.println("Right button clicked");
+            if (component.getType() == ComponentType.Resistor) {
+                openResistorSelectWindow(component.getID());
+            }
+        } else {
+            ImageView iv = component.getSquare().getImageView();
+            iv.setRotate(iv.getRotate() + 90);
+            if (iv.getRotate() == 360) iv.setRotate(0);
+            System.out.println(iv.getRotate());
+        }
     }
 
     public String squareMatrixtoString(Square[][] m) {
         String s = "[";
-        for(int i = 0; i < m.length; i++) {
+        for (int i = 0; i < m.length; i++) {
             s += "[";
-            for(int j = 0; j < m[i].length; j++) {
-                if(j == m[i].length - 1) s += m[i][j] + "]\n";
-                else s += m[i][j] + ", ";
+            for (int j = 0; j < m[i].length; j++) {
+                if (j == m[i].length - 1)
+                    s += m[i][j] + "]\n";
+                else
+                    s += m[i][j] + ", ";
             }
         }
         s += "]";
@@ -171,20 +181,20 @@ public class Main extends Application {
 
     public void setScreenSize(BorderPane root) {
         Rectangle2D screenSize = Screen.getPrimary().getBounds();
-        int screenHeight = (int)screenSize.getMaxY();
-        int screenWidth = (int)screenSize.getMaxX();
+        int screenHeight = (int) screenSize.getMaxY();
+        int screenWidth = (int) screenSize.getMaxX();
         scene = new Scene(root, screenHeight, screenWidth);
     }
 
     public void setUpGrid() {
         squares = new Square[gridHeightSquares][gridWidthSquares];
         gridMatrix = new Rectangle[gridWidthSquares][gridHeightSquares];
-        for(int i = 0; i < gridHeight; i += squareSize) {
-            for(int j = 0; j < gridWidth; j += squareSize) {
+        for (int i = 0; i < gridHeight; i += squareSize) {
+            for (int j = 0; j < gridWidth; j += squareSize) {
                 Rectangle rect = new Rectangle(j, i, squareSize, squareSize);
                 rect.setFill(Color.WHITE);
                 rect.setStroke(Color.BLACK);
-                gridMatrix[j/squareSize][i/squareSize] = rect;
+                gridMatrix[j / squareSize][i / squareSize] = rect;
                 grid.getChildren().add(rect);
             }
         }
@@ -195,10 +205,10 @@ public class Main extends Application {
         int x = 0;
         int y = 0;
         boolean conditionMet = false;
-        if(!(squares[0][0] == null)) {
-            for(int i = 0; i < squares.length; i++) {
-                for(int j = 1; j < squares[i].length; j++) {
-                    if(squares[i][j] == null) {
+        if (!(squares[0][0] == null)) {
+            for (int i = 0; i < squares.length; i++) {
+                for (int j = 1; j < squares[i].length; j++) {
+                    if (squares[i][j] == null) {
                         squares[i][j] = square;
                         x = j;
                         y = i;
@@ -206,23 +216,19 @@ public class Main extends Application {
                         break;
                     }
                 }
-                if(conditionMet) break;
+                if (conditionMet)
+                    break;
             }
-        }
-        else squares[0][0] = square;
+        } else
+            squares[0][0] = square;
         c.setSquare(square);
         square.setX(squareSize * x);
         square.setY(squareSize * y);
         grid.getChildren().add(iv);
         square.draw();
         Tooltip t;
-        if(c.getType() == ComponentType.Resistor) {
-            Resistor r = (Resistor)square.getComponent();
-            t = new Tooltip("ID: " + r.getID() + "\nResistance: " + r.getResistance());
-            Tooltip.install(iv, t);
-        }
-        if(c.getType() == ComponentType.Battery) {
-            Battery b = (Battery)square.getComponent();
+        if (c.getType() == ComponentType.Battery) {
+            Battery b = (Battery) square.getComponent();
             t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage());
             Tooltip.install(iv, t);
         }
@@ -288,6 +294,10 @@ public class Main extends Application {
     }
 
     private void openResistorSelectWindow() {
+        openResistorSelectWindow("");
+    }
+
+    private void openResistorSelectWindow(String id) {
         StackPane layout = new StackPane();
         layout.getChildren().setAll(resistorSelectionRoot);
         Scene scene = new Scene(layout, 600, 400);
@@ -298,29 +308,55 @@ public class Main extends Application {
         newWindow.setX(200);
         newWindow.setY(100);
 
-        final double[] resistanceVal = {0};
-        TextField resistance = (TextField) scene.lookup("#resistance-input");
-        resistance.setOnAction(e -> {
-            String resistanceInput = resistance.getText();
-            if (isNumeric(resistanceInput)) {
-                resistanceVal[0] = Double.parseDouble(resistanceInput);
-                System.out.println(resistanceVal);
-            } else {
-                System.out.println("Not a number");
-            }
-            String id = "resistor" + resistorNum;
-            resistorNum++;
-            Image image = new Image("file:src/circuitryapp/resistor_clear_bkgrd.png", 75, 75, true, true);
-            ImageView iv = new ImageView(image);
-            Resistor r = new Resistor(id, resistanceVal[0]);
-            Square square = addComponentToGrid(r, iv);
-            iv.setOnMousePressed(event -> pressed(event, square));
-            iv.setOnMouseDragged(event -> dragged(event, square));
-            iv.setOnMouseReleased(event -> release(event, square));
-            iv.setOnMouseClicked(event -> clicked(event, square));
-            newWindow.close();
-        });
+        final double[] resistanceVal = { 0 };
+        TextField resistanceField = (TextField) scene.lookup("#resistance-input");
+        resistanceField.setText("");
 
+        if (id != "") {
+            try {
+                Resistor r = (Resistor) circuit.GetPartById(id);
+                resistanceField.setText(Double.toString(r.getResistance()));
+
+                resistanceField.setOnAction(e -> {
+                    String resistanceInput = resistanceField.getText();
+                    if (isNumeric(resistanceInput)) {
+                        resistanceVal[0] = Double.parseDouble(resistanceInput);
+                        r.changeResistance(resistanceVal[0]);
+                        Tooltip t = new Tooltip("ID: " + id + "\nResistance: " + resistanceVal[0]);
+                        ImageView iv = r.getSquare().getImageView();
+                        Tooltip.install(iv, t);
+                    } else {
+                        System.out.println("Not a number");
+                    }
+                    newWindow.close();
+                });
+            } catch (Exception ex) {
+                System.out.println("Invalid id");
+            }
+        } else {
+            resistanceField.setOnAction(e -> {
+                String resistanceInput = resistanceField.getText();
+                if (isNumeric(resistanceInput)) {
+                    resistanceVal[0] = Double.parseDouble(resistanceInput);
+                } else {
+                    System.out.println("Not a number");
+                }
+                Image image = new Image("file:src/circuitryapp/resistor_clear_bkgrd.png", 75, 75, true, true);
+                ImageView iv = new ImageView(image);
+                String resId = "resistor" + resistorNum;
+                resistorNum++;
+                Resistor r = new Resistor(resId, resistanceVal[0]);
+                Square square = addComponentToGrid(r, iv);
+                iv.setOnMousePressed(event -> pressed(event, square));
+                iv.setOnMouseDragged(event -> dragged(event, square));
+                iv.setOnMouseReleased(event -> release(event, square));
+                iv.setOnMouseClicked(event -> clicked(event, r));
+                Tooltip t = new Tooltip("ID: " + resId + "\nResistance: " + resistanceVal[0]);
+                Tooltip.install(iv, t);
+                circuit.addNode(r);
+                newWindow.close();
+            });
+        }
         newWindow.show();
     }
 
@@ -335,7 +371,7 @@ public class Main extends Application {
         newWindow.setX(200);
         newWindow.setY(100);
 
-        final double[] voltageVal = {0};
+        final double[] voltageVal = { 0 };
         TextField voltage = (TextField) scene.lookup("#voltage-input");
         voltage.setOnAction(e -> {
             String voltageInput = voltage.getText();
@@ -354,7 +390,7 @@ public class Main extends Application {
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
             iv.setOnMouseReleased(event -> release(event, square));
-            iv.setOnMouseClicked(event -> clicked(event, square));
+            iv.setOnMouseClicked(event -> clicked(event, b));
             newWindow.close();
         });
 
@@ -371,7 +407,7 @@ public class Main extends Application {
         iv.setOnMousePressed(event -> pressed(event, square));
         iv.setOnMouseDragged(event -> dragged(event, square));
         iv.setOnMouseReleased(event -> release(event, square));
-        iv.setOnMouseClicked(event -> clicked(event, square));
+        iv.setOnMouseClicked(event -> clicked(event, w));
     }
 
     public void createNode() {
@@ -384,7 +420,7 @@ public class Main extends Application {
         iv.setOnMousePressed(event -> pressed(event, square));
         iv.setOnMouseDragged(event -> dragged(event, square));
         iv.setOnMouseReleased(event -> release(event, square));
-        iv.setOnMouseClicked(event -> clicked(event, square));
+        iv.setOnMouseClicked(event -> clicked(event, n));
     }
 
     public static boolean isNumeric(String str) {
@@ -414,30 +450,33 @@ public class Main extends Application {
     }
 
     private void connectComponents() {
-        for(int i = 0; i < squares.length; i++) {
-            for(int j = 0; j < squares[i].length; j++) {
+        for (int i = 0; i < squares.length; i++) {
+            for (int j = 0; j < squares[i].length; j++) {
                 Square s = squares[i][j];
-                if(s != null) {
-                    if(s.getComponent().getType() == ComponentType.Battery) {
+                if (s != null) {
+                    if (s.getComponent().getType() == ComponentType.Battery) {
                         cycle(s, i, j);
                     }
                 }
             }
         }
         String s = "[";
-        for(int i = 0; i < squares.length; i++) {
+        for (int i = 0; i < squares.length; i++) {
             s += "[";
-            for(int j = 0; j < squares[i].length; j++) {
-                if(squares[i][j] != null) {
+            for (int j = 0; j < squares[i].length; j++) {
+                if (squares[i][j] != null) {
                     String e;
                     Component c = squares[i][j].getComponent();
                     e = "{" + c.getID() + ", " + c.getInComp().getID() + ", " + c.getOutComp().getID() + "}";
-                    if(j == squares[i].length - 1) s += e + "]\n";
-                    else s += e + ", ";
-                }
-                else {
-                    if(j == squares[i].length - 1) s += "null]\n";
-                    else s += "null, ";
+                    if (j == squares[i].length - 1)
+                        s += e + "]\n";
+                    else
+                        s += e + ", ";
+                } else {
+                    if (j == squares[i].length - 1)
+                        s += "null]\n";
+                    else
+                        s += "null, ";
                 }
             }
         }
@@ -453,64 +492,57 @@ public class Main extends Application {
         int prevJ = j;
         do {
             Component c = s.getComponent();
-            if(c.getType() == ComponentType.Node) {
-                if(s.getImageView().getRotate() == 0) {
-                    if(j < prevJ) {
+            if (c.getType() == ComponentType.Node) {
+                if (s.getImageView().getRotate() == 0) {
+                    if (j < prevJ) {
                         c.setInComp(squares[i][j + 1].getComponent());
                         c.setOutComp(squares[i - 1][j].getComponent());
                         prevI = i;
                         prevJ = j;
                         i--;
-                    }
-                    else {
+                    } else {
                         c.setInComp(squares[i - 1][j].getComponent());
                         c.setOutComp(squares[i][j + 1].getComponent());
                         prevJ = j;
                         prevI = i;
                         j++;
                     }
-                }
-                else if(s.getImageView().getRotate() == 90) {
+                } else if (s.getImageView().getRotate() == 90) {
                     if (i < prevI) {
                         c.setInComp(squares[i + 1][j].getComponent());
                         c.setOutComp(squares[i][j + 1].getComponent());
                         prevJ = j;
                         prevI = i;
                         j++;
-                    }
-                    else {
+                    } else {
                         c.setInComp(squares[i][j + 1].getComponent());
                         c.setOutComp(squares[i + 1][j].getComponent());
                         prevI = i;
                         prevJ = j;
                         i++;
                     }
-                }
-                else if(s.getImageView().getRotate() == 180) {
-                    if(j > prevJ) {
+                } else if (s.getImageView().getRotate() == 180) {
+                    if (j > prevJ) {
                         c.setInComp(squares[i][j - 1].getComponent());
                         c.setOutComp(squares[i + 1][j].getComponent());
                         prevI = i;
                         prevJ = j;
                         i++;
-                    }
-                    else {
+                    } else {
                         c.setInComp(squares[i + 1][j].getComponent());
                         c.setOutComp(squares[i][j - 1].getComponent());
                         prevJ = j;
                         prevI = i;
                         j--;
                     }
-                }
-                else {
-                    if(i > prevI) {
+                } else {
+                    if (i > prevI) {
                         c.setInComp(squares[i - 1][j].getComponent());
                         c.setOutComp(squares[i][j - 1].getComponent());
                         prevJ = j;
                         prevI = i;
                         j--;
-                    }
-                    else {
+                    } else {
                         c.setInComp(squares[i][j - 1].getComponent());
                         c.setOutComp(squares[i - 1][j].getComponent());
                         prevI = i;
@@ -518,33 +550,29 @@ public class Main extends Application {
                         i--;
                     }
                 }
-            }
-            else {
-                if(s.getImageView().getRotate() == 0 || s.getImageView().getRotate() == 180) {
-                    if(j >= prevJ) {
+            } else {
+                if (s.getImageView().getRotate() == 0 || s.getImageView().getRotate() == 180) {
+                    if (j >= prevJ) {
                         c.setInComp(squares[i][j - 1].getComponent());
                         c.setOutComp(squares[i][j + 1].getComponent());
                         prevJ = j;
                         prevI = i;
                         j++;
-                    }
-                    else {
+                    } else {
                         c.setInComp(squares[i][j + 1].getComponent());
                         c.setOutComp(squares[i][j - 1].getComponent());
                         prevJ = j;
                         prevI = i;
                         j--;
                     }
-                }
-                else {
-                    if(i > prevI) {
+                } else {
+                    if (i > prevI) {
                         c.setInComp(squares[i - 1][j].getComponent());
                         c.setOutComp(squares[i + 1][j].getComponent());
                         prevI = i;
                         prevJ = j;
                         i++;
-                    }
-                    else {
+                    } else {
                         c.setInComp(squares[i + 1][j].getComponent());
                         c.setOutComp(squares[i - 1][j].getComponent());
                         prevI = i;
@@ -553,11 +581,11 @@ public class Main extends Application {
                     }
                 }
             }
-            if(c.getType() == ComponentType.Wire) { 
-                circuit.addWire(c.getInComp(), c.getOutComp()); 
-            }
-            else circuit.addNode(c);
+            if (c.getType() == ComponentType.Wire) {
+                circuit.addWire(c.getInComp(), c.getOutComp());
+            } else
+                circuit.addNode(c);
             s = squares[i][j];
-        } while(!s.equals(battery));
+        } while (!s.equals(battery));
     }
 }
