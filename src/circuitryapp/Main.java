@@ -201,7 +201,7 @@ public class Main extends Application {
             }
         }
         else squares[0][0] = square;
-        
+        c.setSquare(square);
         square.setX(squareSize * x);
         square.setY(squareSize * y);
         grid.getChildren().add(iv);
