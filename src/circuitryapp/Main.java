@@ -75,8 +75,8 @@ public class Main extends Application {
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
-                //mouseCoord.setText(coord);
-                mouseCoord.setText(squareMatrixtoString(squares));
+                mouseCoord.setText(coord);
+                //mouseCoord.setText(squareMatrixtoString(squares));
             }
         });
 
@@ -152,6 +152,7 @@ public class Main extends Application {
         Menu ViewMenu = new Menu("View");
         Menu RunMenu = new Menu("Run");
         MenuItem runmenu1 = new MenuItem("Run");
+        runmenu1.setOnAction(run());
         Menu HelpMenu = new Menu("Help");
         FileMenu.getItems().addAll(filemenu1, filemenu2, filemenu3);
         EditMenu.getItems().addAll(addcomp, clearGrid);
@@ -173,7 +174,7 @@ public class Main extends Application {
             for(int j = 0; j < gridWidth; j += squareSize) {
                 Rectangle rect = new Rectangle(j, i, squareSize, squareSize);
                 rect.setFill(Color.WHITE);
-                //rect.setStroke(Color.BLACK);
+                rect.setStroke(Color.BLACK);
                 gridMatrix[j/squareSize][i/squareSize] = rect;
                 grid.getChildren().add(rect);
             }
@@ -200,52 +201,22 @@ public class Main extends Application {
             }
         }
         else squares[0][0] = square;
+        
         square.setX(squareSize * x);
         square.setY(squareSize * y);
         grid.getChildren().add(iv);
         square.draw();
-        circuit.addNode(c);
         Tooltip t;
         if(c.getType() == ComponentType.Resistor) {
             Resistor r = (Resistor)square.getComponent();
             t = new Tooltip("ID: " + r.getID() + "\nResistance: " + r.getResistance());
+            Tooltip.install(iv, t);
         }
         if(c.getType() == ComponentType.Battery) {
             Battery b = (Battery)square.getComponent();
             t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage());
+            Tooltip.install(iv, t);
         }
-        else {
-            Node n = (Node)square.getComponent();
-            t = new Tooltip("ID: " + n.getID());
-        }
-        Tooltip.install(iv, t);
-        return square;
-    }
-
-    public Square addWireToGrid(Wire w, ImageView iv) {
-        Square square = new Square(0, 0, iv, w);
-        int x = 0;
-        int y = 0;
-        boolean conditionMet = false;
-        if(!(squares[0][0] == null)) {
-            for(int i = 0; i < squares.length; i++) {
-                for(int j = 1; j < squares[i].length; j++) {
-                    if(squares[i][j] == null) {
-                        squares[i][j] = square;
-                        x = j;
-                        y = i;
-                        conditionMet = true;
-                        break;
-                    }
-                }
-                if(conditionMet) break;
-            }
-        }
-        else squares[0][0] = square;
-        square.setX(squareSize * x);
-        square.setY(squareSize * y);
-        grid.getChildren().add(iv);
-        square.draw();
         return square;
     }
 
@@ -387,7 +358,7 @@ public class Main extends Application {
         Image image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
         ImageView iv = new ImageView(image);
         Wire w = new Wire();
-        Square square = addWireToGrid(w, iv);
+        Square square = addComponentToGrid(w, iv);
         iv.setOnMousePressed(event -> pressed(event, square));
         iv.setOnMouseDragged(event -> dragged(event, square));
         iv.setOnMouseReleased(event -> release(event, square));
@@ -439,5 +410,161 @@ public class Main extends Application {
                 setUpGrid();
             }
         };
+    }
+
+    private EventHandler<ActionEvent> run() {
+        return new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                connectComponents();
+            }
+        };
+    }
+
+    private void connectComponents() {
+        for(int i = 0; i < squares.length; i++) {
+            for(int j = 0; j < squares[i].length; j++) {
+                Square s = squares[i][j];
+                if(s != null) {
+                    if(s.getComponent().getType() == ComponentType.Battery) {
+                        cycle(s, i, j);
+                    }
+                }
+            }
+        }
+        String s = "[";
+        for(int i = 0; i < squares.length; i++) {
+            s += "[";
+            for(int j = 0; j < squares[i].length; j++) {
+                if(squares[i][j] != null) {
+                    String e;
+                    Component c = squares[i][j].getComponent();
+                    e = "{" + c.getID() + ", " + c.getInComp().getID() + ", " + c.getOutComp().getID() + "}";
+                    if(j == squares[i].length - 1) s += e + "]\n";
+                    else s += e + ", ";
+                }
+                else {
+                    if(j == squares[i].length - 1) s += "null]\n";
+                    else s += "null, ";
+                }
+            }
+        }
+        s += "]";
+        System.out.println(s);
+    }
+
+    private void cycle(Square battery, int row, int col) {
+        int i = row;
+        int j = col;
+        Square s = battery;
+        int prevI = i;
+        int prevJ = j;
+        do {
+            Component c = s.getComponent();
+            if(c.getType() == ComponentType.Node) {
+                if(s.getImageView().getRotate() == 0) {
+                    if(j < prevJ) {
+                        c.setInComp(squares[i][j + 1].getComponent());
+                        c.setOutComp(squares[i - 1][j].getComponent());
+                        prevI = i;
+                        prevJ = j;
+                        i--;
+                    }
+                    else {
+                        c.setInComp(squares[i - 1][j].getComponent());
+                        c.setOutComp(squares[i][j + 1].getComponent());
+                        prevJ = j;
+                        prevI = i;
+                        j++;
+                    }
+                }
+                else if(s.getImageView().getRotate() == 90) {
+                    if (i < prevI) {
+                        c.setInComp(squares[i + 1][j].getComponent());
+                        c.setOutComp(squares[i][j + 1].getComponent());
+                        prevJ = j;
+                        prevI = i;
+                        j++;
+                    }
+                    else {
+                        c.setInComp(squares[i][j + 1].getComponent());
+                        c.setOutComp(squares[i + 1][j].getComponent());
+                        prevI = i;
+                        prevJ = j;
+                        i++;
+                    }
+                }
+                else if(s.getImageView().getRotate() == 180) {
+                    if(j > prevJ) {
+                        c.setInComp(squares[i][j - 1].getComponent());
+                        c.setOutComp(squares[i + 1][j].getComponent());
+                        prevI = i;
+                        prevJ = j;
+                        i++;
+                    }
+                    else {
+                        c.setInComp(squares[i + 1][j].getComponent());
+                        c.setOutComp(squares[i][j - 1].getComponent());
+                        prevJ = j;
+                        prevI = i;
+                        j--;
+                    }
+                }
+                else {
+                    if(i > prevI) {
+                        c.setInComp(squares[i - 1][j].getComponent());
+                        c.setOutComp(squares[i][j - 1].getComponent());
+                        prevJ = j;
+                        prevI = i;
+                        j--;
+                    }
+                    else {
+                        c.setInComp(squares[i][j - 1].getComponent());
+                        c.setOutComp(squares[i - 1][j].getComponent());
+                        prevI = i;
+                        prevJ = j;
+                        i--;
+                    }
+                }
+            }
+            else {
+                if(s.getImageView().getRotate() == 0 || s.getImageView().getRotate() == 180) {
+                    if(j >= prevJ) {
+                        c.setInComp(squares[i][j - 1].getComponent());
+                        c.setOutComp(squares[i][j + 1].getComponent());
+                        prevJ = j;
+                        prevI = i;
+                        j++;
+                    }
+                    else {
+                        c.setInComp(squares[i][j + 1].getComponent());
+                        c.setOutComp(squares[i][j - 1].getComponent());
+                        prevJ = j;
+                        prevI = i;
+                        j--;
+                    }
+                }
+                else {
+                    if(i > prevI) {
+                        c.setInComp(squares[i - 1][j].getComponent());
+                        c.setOutComp(squares[i + 1][j].getComponent());
+                        prevI = i;
+                        prevJ = j;
+                        i++;
+                    }
+                    else {
+                        c.setInComp(squares[i + 1][j].getComponent());
+                        c.setOutComp(squares[i - 1][j].getComponent());
+                        prevI = i;
+                        prevJ = j;
+                        i--;
+                    }
+                }
+            }
+            if(s.isWire()) { 
+                circuit.addWire(c.getInComp(), c.getOutComp()); 
+            }
+            else circuit.addNode(c);
+            s = squares[i][j];
+        } while(!s.equals(battery));
     }
 }

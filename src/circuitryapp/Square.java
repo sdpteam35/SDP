@@ -1,7 +1,7 @@
 package circuitryapp;
 
 import circuitryapp.components.Component;
-import circuitryapp.components.Wire;
+import circuitryapp.components.Component.ComponentType;
 import javafx.scene.image.ImageView;
 
 public class Square {
@@ -9,22 +9,12 @@ public class Square {
     private double y;
     private ImageView iv;
     private Component c;
-    private Wire w;
 
     public Square(double x, double y, ImageView iv, Component c){
         this.x = x;
         this.y = y;
         this.iv = iv;
         this.c = c;
-        this.w = null;
-    }
-
-    public Square(double x, double y, ImageView iv, Wire w){
-        this.x = x;
-        this.y = y;
-        this.iv = iv;
-        this.w = w;
-        this.c = null;
     }
 
     public void setY(double y){
@@ -47,21 +37,16 @@ public class Square {
         return c;
     }
 
-    public Wire getWire() {
-        return w;
-    }
-
     public ImageView getImageView() {
         return iv;
+    }
+
+    public boolean isWire() { 
+        return c.getType() == ComponentType.Wire; 
     }
 
     public void draw(){
         iv.setTranslateX(x);
         iv.setTranslateY(y);
-    }
-
-    public String toString() {
-        if(c != null) return "{" + x + ", " + y + ", " + c.getID() + "}";
-        else return "{" + x + ", " + y + ", " + "Wire" + "}";
     }
 }

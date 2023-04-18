@@ -3,7 +3,7 @@ import java.util.*;
 
 public abstract class Component {
     public enum ComponentType {
-        Battery, Resistor, Conductor, Inductor, Node
+        Battery, Resistor, Conductor, Inductor, Node, Wire
     }
 
     String identifier;
@@ -37,9 +37,6 @@ public abstract class Component {
     public String getID() {
         return identifier;
     }
-
-
-
 
     public ArrayList<Wire> getInWires(){
         return incomingWires;

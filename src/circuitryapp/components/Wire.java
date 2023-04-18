@@ -1,12 +1,14 @@
 package circuitryapp.components;
 
-public class Wire {
+public class Wire extends Component {
     public double current;
     public double voltageChange;
     public Component start;
     public Component end;
 
-    public Wire() {}
+    public Wire() {
+        super("wire", ComponentType.Wire);
+    }
 
     public void setStart(Component c) {
         start = c;
