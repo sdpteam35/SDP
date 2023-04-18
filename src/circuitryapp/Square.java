@@ -45,4 +45,8 @@ public class Square {
         iv.setTranslateX(x);
         iv.setTranslateY(y);
     }
+
+    public String toString() {
+        return c.getID();
+    }
 }

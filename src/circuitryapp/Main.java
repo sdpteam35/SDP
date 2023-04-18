@@ -53,6 +53,7 @@ public class Main extends Application {
     private int nodeNum;
     private int resistorNum;
     private int batteryNum;
+    private int wireNum;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -60,6 +61,12 @@ public class Main extends Application {
         resistorSelectionRoot = FXMLLoader.load(getClass().getResource("resistorSelectionScreen.fxml"));
         batterySelectionRoot = FXMLLoader.load(getClass().getResource("batterySelectionScreen.fxml"));
         BorderPane root = new BorderPane();
+
+        nodeNum = 1;
+        resistorNum = 1;
+        batteryNum = 1;
+        wireNum = 1;
+
 
         circuit = new Circuit();
 
@@ -357,7 +364,9 @@ public class Main extends Application {
     public void createWire() {
         Image image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
         ImageView iv = new ImageView(image);
-        Wire w = new Wire();
+        String id = "wire" + wireNum;
+        wireNum++;
+        Wire w = new Wire(id);
         Square square = addComponentToGrid(w, iv);
         iv.setOnMousePressed(event -> pressed(event, square));
         iv.setOnMouseDragged(event -> dragged(event, square));

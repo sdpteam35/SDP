@@ -6,8 +6,8 @@ public class Wire extends Component {
     public Component start;
     public Component end;
 
-    public Wire() {
-        super("wire", ComponentType.Wire);
+    public Wire(String id) {
+        super(id, ComponentType.Wire);
     }
 
     public void setStart(Component c) {
