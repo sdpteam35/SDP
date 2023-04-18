@@ -41,10 +41,6 @@ public class Square {
         return iv;
     }
 
-    public boolean isWire() { 
-        return c.getType() == ComponentType.Wire; 
-    }
-
     public void draw(){
         iv.setTranslateX(x);
         iv.setTranslateY(y);

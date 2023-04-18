@@ -560,7 +560,7 @@ public class Main extends Application {
                     }
                 }
             }
-            if(s.isWire()) { 
+            if(c.getType() == ComponentType.Wire) { 
                 circuit.addWire(c.getInComp(), c.getOutComp()); 
             }
             else circuit.addNode(c);
