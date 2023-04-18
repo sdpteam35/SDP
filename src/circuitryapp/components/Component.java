@@ -1,6 +1,8 @@
 package circuitryapp.components;
 import java.util.*;
 
+import circuitryapp.Square;
+
 public abstract class Component {
     public enum ComponentType {
         Battery, Resistor, Conductor, Inductor, Node, Wire
@@ -12,6 +14,7 @@ public abstract class Component {
     public ArrayList<Wire> outgoingWires;
     public Component inComponent;
     public Component outComponent;
+    Square square;
 
     public Component(String id, ComponentType ctype) {
         this.identifier = id;
@@ -43,5 +46,13 @@ public abstract class Component {
     }
     public ArrayList<Wire> getOutWires(){
         return outgoingWires;
+    }
+
+    public void setSquare(Square s) {
+        square = s;
+    }
+
+    public Square getSquare() {
+        return square;
     }
 }
