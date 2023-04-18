@@ -20,11 +20,10 @@ public class Circuit {
         parts.add(o);
         //updateWires(); // change to circuit, check on wires
     }
-    public void addWire(Wire w, Component start, Component end) {
+    public void addWire(Wire w) {
         //start and end are supposed to be Nodes (abstract part class)
         //adds wire (edge) connecting between a start and end part (node)
         //perhaps coordinates on the grid?
-        Wire w = new Wire();
         wires.add(w);
     }
     public void updateWires() {
