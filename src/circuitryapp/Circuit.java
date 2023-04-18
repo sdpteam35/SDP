@@ -46,7 +46,7 @@ public class Circuit {
         //Get's coords of a node/edge
         return -1;
     }
-
+    // changes;
     public double getTotalVoltage(){
         double totalVoltage = 0;
         for (int i=0; i<parts.size(); ++i){

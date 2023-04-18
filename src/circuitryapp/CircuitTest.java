@@ -56,5 +56,6 @@ public class CircuitTest {
         System.out.println("Total Voltage in Circuit: " + c.getTotalVoltage());
         System.out.println("Total Resistance in Circuit: " + c.getTotalResistance());
         System.out.println("Total Current in Circuit: " + c.getTotalCurrent());
+        //changes;
     }
 }
