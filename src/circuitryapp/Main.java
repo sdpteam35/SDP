@@ -554,7 +554,7 @@ public class Main extends Application {
                 }
             }
             if(c.getType() == ComponentType.Wire) { 
-                circuit.addWire(c.getInComp(), c.getOutComp()); 
+                circuit.addWire((Wire)c, c.getInComp(), c.getOutComp()); 
             }
             else circuit.addNode(c);
             s = squares[i][j];
