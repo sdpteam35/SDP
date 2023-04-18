@@ -25,27 +25,6 @@
                   <Insets left="5.0" top="5.0" />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="31.0" prefWidth="600.0">
-               <children>
-                  <TextField id="resistor-id" prefHeight="26.0" prefWidth="159.0" />
-                  <Label text="ID">
-                     <HBox.margin>
-                        <Insets left="10.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-               </children>
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Button id="submit-button" mnemonicParsing="false" text="Submit" />
-               </children>
-               <VBox.margin>
-                  <Insets left="5.0" top="5.0" />
-               </VBox.margin>
-            </HBox>
          </children>
       </VBox>
    </children>

@@ -50,13 +50,15 @@ public class Main extends Application {
     Parent resistorSelectionRoot;
     Parent batterySelectionRoot;
     Parent nodeSelectionRoot;
+    private int nodeNum;
+    private int resistorNum;
+    private int batteryNum;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         elementSelectionRoot = FXMLLoader.load(getClass().getResource("elementSelectionScreen.fxml"));
         resistorSelectionRoot = FXMLLoader.load(getClass().getResource("resistorSelectionScreen.fxml"));
         batterySelectionRoot = FXMLLoader.load(getClass().getResource("batterySelectionScreen.fxml"));
-        nodeSelectionRoot = FXMLLoader.load(getClass().getResource("nodeSelectionScreen.fxml"));
         BorderPane root = new BorderPane();
 
         circuit = new Circuit();
@@ -75,8 +77,8 @@ public class Main extends Application {
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
-                mouseCoord.setText(coord);
-                //mouseCoord.setText(squareMatrixtoString(squares));
+                //mouseCoord.setText(coord);
+                mouseCoord.setText(squareMatrixtoString(squares));
             }
         });
 
@@ -269,7 +271,7 @@ public class Main extends Application {
                 node.setGraphic(nodeImageView);
                 node.setContentDisplay(ContentDisplay.TOP);
                 node.setOnAction(e -> {
-                    openNodeSelectionWindow();
+                    createNode();
                     newWindow.close();
                 });
 
@@ -291,9 +293,7 @@ public class Main extends Application {
 
         final double[] resistanceVal = {0};
         TextField resistance = (TextField) scene.lookup("#resistance-input");
-        TextField id = (TextField) scene.lookup("#resistor-id");
-        Button submit = (Button) scene.lookup("#submit-button");
-        submit.setOnAction(e -> {
+        resistance.setOnAction(e -> {
             String resistanceInput = resistance.getText();
             if (isNumeric(resistanceInput)) {
                 resistanceVal[0] = Double.parseDouble(resistanceInput);
@@ -301,10 +301,11 @@ public class Main extends Application {
             } else {
                 System.out.println("Not a number");
             }
-            String idInput = id.getText();
+            String id = "resistor" + resistorNum;
+            resistorNum++;
             Image image = new Image("file:src/circuitryapp/resistor_clear_bkgrd.png", 75, 75, true, true);
             ImageView iv = new ImageView(image);
-            Resistor r = new Resistor(idInput, resistanceVal[0]);
+            Resistor r = new Resistor(id, resistanceVal[0]);
             Square square = addComponentToGrid(r, iv);
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
@@ -329,9 +330,7 @@ public class Main extends Application {
 
         final double[] voltageVal = {0};
         TextField voltage = (TextField) scene.lookup("#voltage-input");
-        TextField id = (TextField) scene.lookup("#battery-id");
-        Button submit = (Button) scene.lookup("#submit-button");
-        submit.setOnAction(e -> {
+        voltage.setOnAction(e -> {
             String voltageInput = voltage.getText();
             if (isNumeric(voltageInput)) {
                 voltageVal[0] = Double.parseDouble(voltageInput);
@@ -339,10 +338,11 @@ public class Main extends Application {
             } else {
                 System.out.println("Not a number");
             }
-            String idInput = id.getText();
+            String id = "battery" + batteryNum;
+            batteryNum++;
             Image image = new Image("file:src/circuitryapp/battery_clear_bkgrd.png", 75, 75, true, true);
             ImageView iv = new ImageView(image);
-            Battery b = new Battery(idInput, voltageVal[0]);
+            Battery b = new Battery(id, voltageVal[0]);
             Square square = addComponentToGrid(b, iv);
             iv.setOnMousePressed(event -> pressed(event, square));
             iv.setOnMouseDragged(event -> dragged(event, square));
@@ -365,33 +365,17 @@ public class Main extends Application {
         iv.setOnMouseClicked(event -> clicked(event, square));
     }
 
-    public void openNodeSelectionWindow() {
-        StackPane layout = new StackPane();
-        layout.getChildren().setAll(nodeSelectionRoot);
-        Scene scene = new Scene(layout, 600, 400);
-
-        Stage newWindow = new Stage();
-        newWindow.setTitle("New Node");
-        newWindow.setScene(scene);
-        newWindow.setX(200);
-        newWindow.setY(100);
-        
-        TextField id = (TextField) scene.lookup("#node-id");
-        Button submit = (Button) scene.lookup("#submit-button");
-        submit.setOnAction(e -> {
-            String idInput = id.getText();
-            Image image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
-            ImageView iv = new ImageView(image);
-            Node n = new Node(idInput);
-            Square square = addComponentToGrid(n, iv);
-            iv.setOnMousePressed(event -> pressed(event, square));
-            iv.setOnMouseDragged(event -> dragged(event, square));
-            iv.setOnMouseReleased(event -> release(event, square));
-            iv.setOnMouseClicked(event -> clicked(event, square));
-            newWindow.close();
-        });
-
-        newWindow.show();
+    public void createNode() {
+        String id = "node" + nodeNum;
+        nodeNum++;
+        Image image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+        ImageView iv = new ImageView(image);
+        Node n = new Node(id);
+        Square square = addComponentToGrid(n, iv);
+        iv.setOnMousePressed(event -> pressed(event, square));
+        iv.setOnMouseDragged(event -> dragged(event, square));
+        iv.setOnMouseReleased(event -> release(event, square));
+        iv.setOnMouseClicked(event -> clicked(event, square));
     }
 
     public static boolean isNumeric(String str) {
