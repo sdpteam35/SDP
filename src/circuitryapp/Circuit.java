@@ -12,6 +12,7 @@ public class Circuit {
 
     public Circuit(){
         parts = new ArrayList<Component>();
+        wires = new ArrayList<Wire>();
     }
 
     public void addNode(Component o) {
