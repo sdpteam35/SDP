@@ -8,7 +8,7 @@ public class CircuitTest {
         Battery b = new Battery("Battery",10.0);
         Resistor r1 = new Resistor("res1", 5.0);
         Resistor r2 = new Resistor("res2", 7.0);
-        Resistor r3 = new Resistor("res3", 3.0);
+        /*Resistor r3 = new Resistor("res3", 3.0);
         c.addNode(b);
         c.addNode(r1);
         c.addNode(r2);
@@ -37,7 +37,7 @@ public class CircuitTest {
         b.setInComp(r3);
 
         double totalRes = 0.0;
-        totalRes = c.totalResistanceNode();
+        totalRes = c.totalResistanceNode();8/
 
         /*Wire w1 = new Wire(b,r1);
         b.getOutWires().add(w1);
@@ -49,6 +49,13 @@ public class CircuitTest {
         r3.getOutWires().add(w4);
         
         double totalRes = c.totalResistanceWires();*/
-        System.out.println("Total Resistance in Circuit: " + totalRes);
+        c.addNode(b);
+        c.addNode(r1);
+        c.addNode(r2);
+
+        System.out.println("Total Voltage in Circuit: " + c.getTotalVoltage());
+        System.out.println("Total Resistance in Circuit: " + c.getTotalResistance());
+        System.out.println("Total Current in Circuit: " + c.getTotalCurrent());
+        //changes;
     }
 }

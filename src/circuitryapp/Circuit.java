@@ -20,11 +20,10 @@ public class Circuit {
         parts.add(o);
         //updateWires(); // change to circuit, check on wires
     }
-    public void addWire(Component start, Component end) {
+    public void addWire(Wire w) {
         //start and end are supposed to be Nodes (abstract part class)
         //adds wire (edge) connecting between a start and end part (node)
         //perhaps coordinates on the grid?
-        Wire w = new Wire();
         wires.add(w);
     }
     public void updateWires() {
@@ -45,6 +44,33 @@ public class Circuit {
     public int getCoordinates() {
         //Get's coords of a node/edge
         return -1;
+    }
+    // changes;
+    public double getTotalVoltage(){
+        double totalVoltage = 0;
+        for (int i=0; i<parts.size(); ++i){
+            //ComponentType ctype = ComponentType.Battery;
+            if (parts.get(i).getType().equals(ComponentType.Battery)) {
+                Battery bat = (Battery)parts.get(i);
+                totalVoltage += bat.getVoltage();
+            }
+        }
+        return totalVoltage;
+    }
+
+    public double getTotalResistance(){
+        double totalResistance = 0;
+        for (int i=0; i<parts.size(); ++i){
+            //ComponentType ctype = ComponentType.Battery;
+            if (parts.get(i).getType().equals(ComponentType.Resistor)) {
+                Resistor res = (Resistor)parts.get(i);
+                totalResistance += res.getResistance();
+            }
+        }
+        return totalResistance;
+    }
+    public double getTotalCurrent(){
+        return getTotalVoltage() / getTotalResistance();
     }
 
     public double totalResistanceNode(){
