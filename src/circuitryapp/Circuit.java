@@ -159,4 +159,12 @@ public class Circuit {
         return -1;
     }
     
+    public Component GetPartById(String id) {
+        for (Component component : parts) {
+            System.out.println(component.getID());
+            if (component.getID() == id)
+                return component;
+        }
+        return null;
+    }
 }
