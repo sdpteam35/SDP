@@ -68,7 +68,6 @@ public class Main extends Application {
         batteryNum = 1;
         wireNum = 1;
 
-
         circuit = new Circuit();
 
         // Scene
@@ -86,7 +85,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                 String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
-                //mouseCoord.setText(coord);
+                // mouseCoord.setText(coord);
                 mouseCoord.setText(squareMatrixtoString(squares));
             }
         });
@@ -132,11 +131,14 @@ public class Main extends Application {
             System.out.println("Right button clicked");
             if (component.getType() == ComponentType.Resistor) {
                 openResistorSelectWindow(component.getID());
+            } else if (component.getType() == ComponentType.Battery) {
+                openBatterySelectWindow(component.getID());
             }
         } else {
             ImageView iv = component.getSquare().getImageView();
             iv.setRotate(iv.getRotate() + 90);
-            if (iv.getRotate() == 360) iv.setRotate(0);
+            if (iv.getRotate() == 360)
+                iv.setRotate(0);
             System.out.println(iv.getRotate());
         }
     }
@@ -226,12 +228,6 @@ public class Main extends Application {
         square.setY(squareSize * y);
         grid.getChildren().add(iv);
         square.draw();
-        Tooltip t;
-        if (c.getType() == ComponentType.Battery) {
-            Battery b = (Battery) square.getComponent();
-            t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage());
-            Tooltip.install(iv, t);
-        }
         return square;
     }
 
@@ -361,38 +357,69 @@ public class Main extends Application {
     }
 
     private void openBatterySelectWindow() {
+        openBatterySelectWindow("");
+    }
+
+    private void openBatterySelectWindow(String id) {
         StackPane layout = new StackPane();
         layout.getChildren().setAll(batterySelectionRoot);
         Scene scene = new Scene(layout, 600, 400);
 
         Stage newWindow = new Stage();
-        newWindow.setTitle("New Resistor");
+        newWindow.setTitle("New Battery");
         newWindow.setScene(scene);
         newWindow.setX(200);
         newWindow.setY(100);
 
         final double[] voltageVal = { 0 };
-        TextField voltage = (TextField) scene.lookup("#voltage-input");
-        voltage.setOnAction(e -> {
-            String voltageInput = voltage.getText();
-            if (isNumeric(voltageInput)) {
-                voltageVal[0] = Double.parseDouble(voltageInput);
-                System.out.println(voltageVal);
-            } else {
-                System.out.println("Not a number");
+        TextField voltageField = (TextField) scene.lookup("#voltage-input");
+        voltageField.setText("");
+
+        if (id != "") {
+            try {
+                Battery b = (Battery) circuit.GetPartById(id);
+                voltageField.setText(Double.toString(b.getVoltage()));
+
+                voltageField.setOnAction(e -> {
+                    String voltageInput = voltageField.getText();
+                    if (isNumeric(voltageInput)) {
+                        voltageVal[0] = Double.parseDouble(voltageInput);
+                        b.changeVoltage(voltageVal[0]);
+                        Tooltip t = new Tooltip("ID: " + id + "\nVoltage: " + voltageVal[0]);
+                        ImageView iv = b.getSquare().getImageView();
+                        Tooltip.install(iv, t);
+                    } else {
+                        System.out.println("Not a number");
+                    }
+                    newWindow.close();
+                });
+            } catch (Exception ex) {
+                System.out.println("Invalid id");
             }
-            String id = "battery" + batteryNum;
-            batteryNum++;
-            Image image = new Image("file:src/circuitryapp/battery_clear_bkgrd.png", 75, 75, true, true);
-            ImageView iv = new ImageView(image);
-            Battery b = new Battery(id, voltageVal[0]);
-            Square square = addComponentToGrid(b, iv);
-            iv.setOnMousePressed(event -> pressed(event, square));
-            iv.setOnMouseDragged(event -> dragged(event, square));
-            iv.setOnMouseReleased(event -> release(event, square));
-            iv.setOnMouseClicked(event -> clicked(event, b));
-            newWindow.close();
-        });
+        } else {
+            voltageField.setOnAction(e -> {
+                String voltageInput = voltageField.getText();
+                if (isNumeric(voltageInput)) {
+                    voltageVal[0] = Double.parseDouble(voltageInput);
+                } else {
+                    System.out.println("Not a number");
+                }
+                Image image = new Image("file:src/circuitryapp/battery_clear_bkgrd.png", 75, 75, true, true);
+                ImageView iv = new ImageView(image);
+                String batId = "battery" + batteryNum;
+                batteryNum++;
+                Battery b = new Battery(batId, voltageVal[0]);
+                Square square = addComponentToGrid(b, iv);
+                iv.setOnMousePressed(event -> pressed(event, square));
+                iv.setOnMouseDragged(event -> dragged(event, square));
+                iv.setOnMouseReleased(event -> release(event, square));
+                iv.setOnMouseClicked(event -> clicked(event, b));
+                Tooltip t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage());
+                Tooltip.install(iv, t);
+                circuit.addNode(b);
+                newWindow.close();
+            });
+        }
 
         newWindow.show();
     }
@@ -581,10 +608,10 @@ public class Main extends Application {
                     }
                 }
             }
-            if(c.getType() == ComponentType.Wire) { 
-                circuit.addWire((Wire)c); 
-            }
-            else circuit.addNode(c);
+            if (c.getType() == ComponentType.Wire) {
+                circuit.addWire((Wire) c);
+            } else
+                circuit.addNode(c);
             s = squares[i][j];
         } while (!s.equals(battery));
     }
