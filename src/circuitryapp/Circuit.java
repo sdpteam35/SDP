@@ -28,9 +28,6 @@ public class Circuit {
     }
     public void updateWires() {
         //every time a new node/edge is added, update the math in the wires in the circuit  
-        for (Wire w : wires) {
-            
-        }
     }
     public boolean isValidCircuit() {
         //true if circuit is valid

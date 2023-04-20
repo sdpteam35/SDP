@@ -1,7 +1,6 @@
 package circuitryapp;
 
 import circuitryapp.components.Component;
-import circuitryapp.components.Component.ComponentType;
 import javafx.scene.image.ImageView;
 
 public class Square {

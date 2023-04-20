@@ -1,8 +1,6 @@
 package circuitryapp.components;
 import java.util.*;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 public class Node extends Component{
     ArrayList<Component> incomingParts;
     ArrayList<Component> outgoingParts;

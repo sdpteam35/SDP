@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,8 +29,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -78,17 +81,6 @@ public class Main extends Application {
 
         grid = new Pane();
         setUpGrid();
-
-        // Mouse coordinates label
-        mouseCoord = new Label();
-        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                String coord = "x: " + event.getSceneX() + " y: " + event.getSceneY();
-                // mouseCoord.setText(coord);
-                mouseCoord.setText(squareMatrixtoString(squares));
-            }
-        });
 
         // grid.setAlignment(Pos.CENTER);
         root.setCenter(grid);
@@ -197,7 +189,7 @@ public class Main extends Application {
             for (int j = 0; j < gridWidth; j += squareSize) {
                 Rectangle rect = new Rectangle(j, i, squareSize, squareSize);
                 rect.setFill(Color.WHITE);
-                rect.setStroke(Color.BLACK);
+                //rect.setStroke(Color.BLACK);
                 gridMatrix[j / squareSize][i / squareSize] = rect;
                 grid.getChildren().add(rect);
             }
@@ -559,6 +551,23 @@ public class Main extends Application {
         return new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 connectComponents();
+                VBox layout = new VBox();
+                Scene scene = new Scene(layout, 300, 200);
+
+                Stage newWindow = new Stage();
+                newWindow.setTitle("Component List");
+                newWindow.setScene(scene);
+                newWindow.setX(500);
+                newWindow.setY(300);
+                layout.setAlignment(Pos.CENTER);
+
+                Text voltage = new Text("Total voltage: " + circuit.getTotalVoltage() + " V"); 
+                Text resistance = new Text("Total resistance: " + circuit.getTotalResistance() + " Ω");
+                Text current = new Text("Total current: " + circuit.getTotalCurrent() + " A");
+
+                layout.getChildren().addAll(voltage, resistance, current);
+
+                newWindow.show();
             }
         };
     }
@@ -574,28 +583,6 @@ public class Main extends Application {
                 }
             }
         }
-        String s = "[";
-        for (int i = 0; i < squares.length; i++) {
-            s += "[";
-            for (int j = 0; j < squares[i].length; j++) {
-                if (squares[i][j] != null) {
-                    String e;
-                    Component c = squares[i][j].getComponent();
-                    e = "{" + c.getID() + ", " + c.getInComp().getID() + ", " + c.getOutComp().getID() + "}";
-                    if (j == squares[i].length - 1)
-                        s += e + "]\n";
-                    else
-                        s += e + ", ";
-                } else {
-                    if (j == squares[i].length - 1)
-                        s += "null]\n";
-                    else
-                        s += "null, ";
-                }
-            }
-        }
-        s += "]";
-        System.out.println(s);
     }
 
     private void cycle(Square battery, int row, int col) {
