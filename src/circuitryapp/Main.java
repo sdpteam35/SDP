@@ -169,6 +169,8 @@ public class Main extends Application {
         addcomp.setOnAction(openComponentWindow());
         MenuItem clearGrid = new MenuItem("Clear Grid");
         clearGrid.setOnAction(clearGrid());
+        MenuItem preset = new MenuItem("Load Preset Circuit");
+        preset.setOnAction(loadPreset());
         Menu SelectionMenu = new Menu("Selection");
         Menu ViewMenu = new Menu("View");
         Menu RunMenu = new Menu("Run");
@@ -176,7 +178,7 @@ public class Main extends Application {
         runmenu1.setOnAction(run());
         Menu HelpMenu = new Menu("Help");
         FileMenu.getItems().addAll(filemenu1, filemenu2, filemenu3);
-        EditMenu.getItems().addAll(addcomp, clearGrid);
+        EditMenu.getItems().addAll(addcomp, clearGrid, preset);
         RunMenu.getItems().addAll(runmenu1);
         menubar.getMenus().addAll(FileMenu, EditMenu, SelectionMenu, ViewMenu, RunMenu, HelpMenu);
     }
@@ -200,6 +202,77 @@ public class Main extends Application {
                 grid.getChildren().add(rect);
             }
         }
+    }
+
+    private EventHandler<ActionEvent> loadPreset() {
+        return new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                Battery b = new Battery("battery1", 1);
+                Image batteryImage = new Image("file:src/circuitryapp/battery_clear_bkgrd.png", 75, 75, true, true);
+                ImageView batteryIV = new ImageView(batteryImage);
+                addComponentToGrid(b, batteryIV, 1, 2);
+                circuit.addNode(b);
+
+                Resistor r = new Resistor("resistor1", 1);
+                Image resistorImage = new Image("file:src/circuitryapp/resistor_clear_bkgrd.png", 75, 75, true, true);
+                ImageView resistorImageView = new ImageView(resistorImage);
+                addComponentToGrid(r, resistorImageView, 3, 3);
+                circuit.addNode(r);
+
+                Node node1 = new Node("node1");
+                Image node1Image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+                ImageView node1ImageView = new ImageView(node1Image);
+                addComponentToGrid(node1, node1ImageView, 1, 1);
+                node1ImageView.setRotate(90);
+                circuit.addNode(node1);
+
+                Node node2 = new Node("node2");
+                Image node2Image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+                ImageView node2ImageView = new ImageView(node2Image);
+                addComponentToGrid(node2, node2ImageView, 1, 4);
+                node2ImageView.setRotate(180);
+                circuit.addNode(node2);
+
+                Node node3 = new Node("node3");
+                Image node3Image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+                ImageView node3ImageView = new ImageView(node3Image);
+                addComponentToGrid(node3, node3ImageView, 3, 1);
+                circuit.addNode(node3);
+
+                Node node4 = new Node("node4");
+                Image node4Image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
+                ImageView node4ImageView = new ImageView(node4Image);
+                addComponentToGrid(node4, node4ImageView, 3, 4);
+                node4ImageView.setRotate(270);
+                circuit.addNode(node4);
+
+                Wire wire1 = new Wire("wire1");
+                Image wire1Image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
+                ImageView wire1ImageView = new ImageView(wire1Image);
+                addComponentToGrid(wire1, wire1ImageView, 1, 3);
+                circuit.addWire(wire1);
+
+                Wire wire2 = new Wire("wire2");
+                Image wire2Image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
+                ImageView wire2ImageView = new ImageView(wire2Image);
+                addComponentToGrid(wire2, wire2ImageView, 2, 1);
+                wire2ImageView.setRotate(90);
+                circuit.addWire(wire2);
+
+                Wire wire3 = new Wire("wire3");
+                Image wire3Image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
+                ImageView wire3ImageView = new ImageView(wire3Image);
+                addComponentToGrid(wire3, wire3ImageView, 2, 4);
+                wire3ImageView.setRotate(90);
+                circuit.addWire(wire3);
+
+                Wire wire4 = new Wire("wire4");
+                Image wire4Image = new Image("file:src/circuitryapp/wire.png", 75, 75, true, true);
+                ImageView wire4ImageView = new ImageView(wire4Image);
+                addComponentToGrid(wire4, wire4ImageView, 3, 2);
+                circuit.addWire(wire4);
+            }
+        };
     }
 
     public Square addComponentToGrid(Component c, ImageView iv) {
@@ -229,6 +302,20 @@ public class Main extends Application {
         grid.getChildren().add(iv);
         square.draw();
         return square;
+    }
+
+    public void addComponentToGrid(Component c, ImageView iv, int i, int j) {
+        Square square = new Square(0, 0, iv, c);
+        squares[i][j] = square;
+        c.setSquare(square);
+        square.setX(squareSize * j);
+        square.setY(squareSize * i);
+        grid.getChildren().add(iv);
+        square.draw();
+        iv.setOnMousePressed(event -> pressed(event, square));
+        iv.setOnMouseDragged(event -> dragged(event, square));
+        iv.setOnMouseReleased(event -> release(event, square));
+        iv.setOnMouseClicked(event -> clicked(event, c));
     }
 
     private EventHandler<ActionEvent> openComponentWindow() {
