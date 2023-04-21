@@ -85,7 +85,6 @@ public class Main extends Application {
         // grid.setAlignment(Pos.CENTER);
         root.setCenter(grid);
         root.setTop(menubar);
-        root.setBottom(new StackPane(mouseCoord));
         primaryStage.setTitle("Circuitry Application");
         primaryStage.setScene(scene);
         primaryStage.show();
