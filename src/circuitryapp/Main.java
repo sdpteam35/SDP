@@ -203,12 +203,16 @@ public class Main extends Application {
                 ImageView batteryIV = new ImageView(batteryImage);
                 addComponentToGrid(b, batteryIV, 1, 2);
                 circuit.addNode(b);
+                Tooltip t1 = new Tooltip("ID: battery1 \nVoltage: 1.0 V");
+                Tooltip.install(batteryIV, t1);
 
                 Resistor r = new Resistor("resistor1", 1);
                 Image resistorImage = new Image("file:src/circuitryapp/resistor_clear_bkgrd.png", 75, 75, true, true);
                 ImageView resistorImageView = new ImageView(resistorImage);
                 addComponentToGrid(r, resistorImageView, 3, 3);
                 circuit.addNode(r);
+                Tooltip t2 = new Tooltip("ID: resistor1 \nResistance: 1.0 Ω");
+                Tooltip.install(resistorImageView, t2);
 
                 Node node1 = new Node("node1");
                 Image node1Image = new Image("file:src/circuitryapp/node.png", 75, 75, true, true);
@@ -396,7 +400,7 @@ public class Main extends Application {
                     if (isNumeric(resistanceInput)) {
                         resistanceVal[0] = Double.parseDouble(resistanceInput);
                         r.changeResistance(resistanceVal[0]);
-                        Tooltip t = new Tooltip("ID: " + id + "\nResistance: " + resistanceVal[0]);
+                        Tooltip t = new Tooltip("ID: " + id + "\nResistance: " + resistanceVal[0] + " Ω");
                         ImageView iv = r.getSquare().getImageView();
                         Tooltip.install(iv, t);
                     } else {
@@ -425,7 +429,7 @@ public class Main extends Application {
                 iv.setOnMouseDragged(event -> dragged(event, square));
                 iv.setOnMouseReleased(event -> release(event, square));
                 iv.setOnMouseClicked(event -> clicked(event, r));
-                Tooltip t = new Tooltip("ID: " + resId + "\nResistance: " + resistanceVal[0]);
+                Tooltip t = new Tooltip("ID: " + resId + "\nResistance: " + resistanceVal[0] + " Ω");
                 Tooltip.install(iv, t);
                 circuit.addNode(r);
                 newWindow.close();
@@ -463,7 +467,7 @@ public class Main extends Application {
                     if (isNumeric(voltageInput)) {
                         voltageVal[0] = Double.parseDouble(voltageInput);
                         b.changeVoltage(voltageVal[0]);
-                        Tooltip t = new Tooltip("ID: " + id + "\nVoltage: " + voltageVal[0]);
+                        Tooltip t = new Tooltip("ID: " + id + "\nVoltage: " + voltageVal[0] + " V");
                         ImageView iv = b.getSquare().getImageView();
                         Tooltip.install(iv, t);
                     } else {
@@ -492,7 +496,7 @@ public class Main extends Application {
                 iv.setOnMouseDragged(event -> dragged(event, square));
                 iv.setOnMouseReleased(event -> release(event, square));
                 iv.setOnMouseClicked(event -> clicked(event, b));
-                Tooltip t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage());
+                Tooltip t = new Tooltip("ID: " + b.getID() + "\nVoltage: " + b.getVoltage() + " V");
                 Tooltip.install(iv, t);
                 circuit.addNode(b);
                 newWindow.close();
