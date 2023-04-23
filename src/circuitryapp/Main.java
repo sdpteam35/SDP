@@ -558,7 +558,7 @@ public class Main extends Application {
                 Scene scene = new Scene(layout, 300, 200);
 
                 Stage newWindow = new Stage();
-                newWindow.setTitle("Component List");
+                newWindow.setTitle("Results");
                 newWindow.setScene(scene);
                 newWindow.setX(500);
                 newWindow.setY(300);
